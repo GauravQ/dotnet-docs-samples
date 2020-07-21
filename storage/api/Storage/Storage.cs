@@ -74,6 +74,7 @@ namespace GoogleCloudSamples
             "  Storage delete bucket-name object-name [object-name]\n" +
             "  Storage enable-requester-pays bucket-name\n" +
             "  Storage disable-requester-pays bucket-name\n" +
+            "  Storage disable-versioning bucket-name\n" +
             "  Storage get-requester-pays bucket-name\n" +
             "  Storage generate-encryption-key\n" +
             "  Storage get-bucket-default-event-based-hold bucket-name\n" +
@@ -1622,6 +1623,11 @@ namespace GoogleCloudSamples
                     case "get-uniform-bucket-level-access":
                         if (args.Length < 2 && PrintUsage()) return -1;
                         GetUniformBucketLevelAccess(args[1]);
+                        break;
+
+                    case "disable-versioning":
+                        if (args.Length < 2 && PrintUsage()) return -1;
+                        DisableVersioning.Disable(args[1]);
                         break;
 
                     default:

@@ -262,6 +262,14 @@ namespace GoogleCloudSamples
                 Assert.Contains("HelloListObjectsTest.txt", listed.Stdout);
             });
         }
+        
+        [Fact]
+        public void TestDisableVersioning()
+        {
+            // Try disabling versioning for bucket.
+            var dis_version = Run("disable-versioning", _bucketName);
+            AssertSucceeded(dis_version);
+        }
 
         public string[] SplitOutput(string stdout) =>
             stdout.Split('\n')
