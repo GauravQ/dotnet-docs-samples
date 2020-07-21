@@ -263,6 +263,33 @@ namespace GoogleCloudSamples
             });
         }
 
+        [Fact]
+        public void TestChangeFileStorageClass()
+        {
+            var storageClassColdLine = StorageClasses.Coldline;
+            var objectName = "HelloChangeFileStorageClass.txt";
+            //Upload a file
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            //change storage class
+            var change_class = Run("change-file-storage-class", _bucketName, objectName);
+            AssertSucceeded(change_class);
+
+            try
+            {
+                // Try getting the metadata of the file.  We should find updated storage class.
+                var fileMetaData = Run("get-metadata", _bucketName, objectName);
+                AssertSucceeded(fileMetaData);
+                Assert.Contains(_bucketName, fileMetaData.Stdout);
+                Assert.Contains(storageClassColdLine, fileMetaData.Stdout);
+            }
+            finally
+            {
+                File.Delete("HelloChangeFileStorageClass.txt");
+            }
+        }
+
         public string[] SplitOutput(string stdout) =>
             stdout.Split('\n')
                 .Select((s) => s.Trim()).Where((s) => !string.IsNullOrEmpty(s))

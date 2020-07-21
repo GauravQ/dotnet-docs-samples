@@ -62,6 +62,7 @@ namespace GoogleCloudSamples
             "  Storage get-hmac-key access-id\n" +
             "  Storage list-hmac-keys\n" +
             "  Storage deactivate-hmac-key access-id\n" +
+            "  Storage change-file-storage-class bucket-name object-name\n" +
             "  Storage activate-hmac-key access-id\n" +
             "  Storage delete-hmac-key access-id\n" +
             "  Storage add-owner bucket-name user-email\n" +
@@ -1622,6 +1623,10 @@ namespace GoogleCloudSamples
                     case "get-uniform-bucket-level-access":
                         if (args.Length < 2 && PrintUsage()) return -1;
                         GetUniformBucketLevelAccess(args[1]);
+                        break;
+
+                    case "change-file-storage-class":
+                        ChangeFileStorageClass.ChangeStorageClass(args[1], args[2]);
                         break;
 
                     default:
