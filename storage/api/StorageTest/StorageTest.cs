@@ -269,7 +269,7 @@ namespace GoogleCloudSamples
             var storageClassColdLine = StorageClasses.Coldline;
             // Try changing storage class of bucket to ColdLine.
             var change_class = Run("change-default-storage-class", _bucketName);
-            Assert.Equal(409, change_class.ExitCode);
+            AssertSucceeded(change_class);
 
             // Try getting the metadata of the bucket.  We should find updated storage class.
             Eventually(() =>
