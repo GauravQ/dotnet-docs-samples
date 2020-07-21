@@ -262,6 +262,24 @@ namespace GoogleCloudSamples
                 Assert.Contains("HelloListObjectsTest.txt", listed.Stdout);
             });
         }
+        
+        [Fact]
+        public void TestChangeBucketStorageClass()
+        {
+            var storageClassColdLine = StorageClasses.Coldline;
+            // Try changing storage class of bucket to ColdLine.
+            var change_class = Run("change-storage-class", _bucketName);
+            Assert.Equal(409, change_class.ExitCode);
+
+            // Try getting the metadata of the bucket.  We should find updated storage class.
+            Eventually(() =>
+            {
+                var bucketMetaData = Run("get-bucket-metadata", _bucketName);
+                AssertSucceeded(bucketMetaData);
+                Assert.Contains(_bucketName, bucketMetaData.Stdout);
+                Assert.Contains(storageClassColdLine, bucketMetaData.Stdout);
+            });
+        }
 
         public string[] SplitOutput(string stdout) =>
             stdout.Split('\n')
