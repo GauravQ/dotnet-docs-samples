@@ -1625,7 +1625,7 @@ namespace GoogleCloudSamples
                         GetUniformBucketLevelAccess(args[1]);
                         break;
                     
-                    case "change-storage-class":
+                    case "change-bucket-storage-class":
                         ChangeBucketStorageClass.ChangeStorageClass(args[1]);
                         break;
 
