@@ -453,6 +453,28 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestCopyArchived()
+        {
+            Run("upload", _bucketName, "Hello.txt", Collect("HelloCopy.txt"));
+            using (var otherBucket = new BucketFixture())
+            {
+                //TODO To Be Changed
+                var fileArchivedGeneration = "1579287380533984";
+                AssertSucceeded(Run("copy-archived", _bucketName, "HelloCopy.txt",
+                    otherBucket.BucketName, "ByeCopy.txt", fileArchivedGeneration));
+                try
+                {
+                    AssertSucceeded(Run("get-metadata", otherBucket.BucketName,
+                        "ByeCopy.txt"));
+                }
+                finally
+                {
+                    Run("delete", otherBucket.BucketName, "ByeCopy.txt");
+                }
+            }
+        }
+
+        [Fact]
         public void TestPrintBucketAcl()
         {
             var printedAcl = Run("print-acl", _bucketName);

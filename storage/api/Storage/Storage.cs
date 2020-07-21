@@ -40,6 +40,7 @@ namespace GoogleCloudSamples
             "  Storage make-public bucket-name object-name\n" +
             "  Storage upload [-key encryption-key] bucket-name local-file-path [object-name]\n" +
             "  Storage copy source-bucket-name source-object-name dest-bucket-name dest-object-name\n" +
+            "  Storage copy-archived source-bucket-name source-object-name dest-bucket-name dest-object-name generation\n" +
             "  Storage move bucket-name source-object-name dest-object-name\n" +
             "  Storage download [-key encryption-key] bucket-name object-name [local-file-path]\n" +
             "  Storage download-byte-range bucket-name object-name range-begin range-end [local-file-path]\n" +
@@ -1414,6 +1415,11 @@ namespace GoogleCloudSamples
                     case "copy":
                         if (args.Length < 5 && PrintUsage()) return -1;
                         CopyObject(args[1], args[2], args[3], args[4]);
+                        break;
+
+                    case "copy-archived":
+                        if (args.Length < 6 && PrintUsage()) return -1;
+                        CopyFileArchivedGeneration.CopyArchivedObject(args[1], args[2], args[3], args[4], Convert.ToInt64(args[5]));
                         break;
 
                     case "print-acl":
