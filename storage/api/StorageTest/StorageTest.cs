@@ -337,6 +337,29 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestDownloadPublicFile()
+        {
+            //Upload a file
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect("HelloDownloadPublicFile.txt"));
+            AssertSucceeded(uploaded);
+
+            // Make it public
+            var madePublic = Run("make-public", _bucketName, "HelloDownloadPublicFile.txt");
+            AssertSucceeded(madePublic);
+
+            try
+            {
+                //Try downloading without creds 
+                var downloaded = Run("download-public-file", _bucketName, "HelloDownloadPublicFile.txt");
+                AssertSucceeded(downloaded);
+            }
+            finally
+            {
+                File.Delete("HelloDownloadPublicFile.txt");
+            }
+        }
+
+        [Fact]
         public void TestDownloadCompleteByteRange()
         {
             var uploaded = Run("upload", _bucketName, "Hello.txt", Collect("HelloDownloadCompleteByteRange.txt"));

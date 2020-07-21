@@ -42,6 +42,7 @@ namespace GoogleCloudSamples
             "  Storage copy source-bucket-name source-object-name dest-bucket-name dest-object-name\n" +
             "  Storage move bucket-name source-object-name dest-object-name\n" +
             "  Storage download [-key encryption-key] bucket-name object-name [local-file-path]\n" +
+            "  Storage download-public-file bucket-name object-name [local-file-path]\n" +
             "  Storage download-byte-range bucket-name object-name range-begin range-end [local-file-path]\n" +
             "  Storage generate-signed-url bucket-name object-name\n" +
             "  Storage generate-signed-get-url-v4 bucket-name object-name\n" +
@@ -1382,6 +1383,11 @@ namespace GoogleCloudSamples
                         {
                             DownloadObject(args[1], args[2], args.Length < 4 ? null : args[3]);
                         }
+                        break;
+
+                    case "download-public-file":
+                        if (args.Length < 3 && PrintUsage()) return -1;
+                        DownloadPublicFile.Download(args[1], args[2], args.Length < 4 ? null : args[3]);
                         break;
 
                     case "download-byte-range":
