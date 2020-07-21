@@ -72,6 +72,7 @@ namespace GoogleCloudSamples
             "  Storage remove-default-owner bucket-name user-email\n" +
             "  Storage delete bucket-name\n" +
             "  Storage delete bucket-name object-name [object-name]\n" +
+            "  Storage delete-archived bucket-name object-name generation\n" +
             "  Storage enable-requester-pays bucket-name\n" +
             "  Storage disable-requester-pays bucket-name\n" +
             "  Storage get-requester-pays bucket-name\n" +
@@ -1340,6 +1341,11 @@ namespace GoogleCloudSamples
                         {
                             DeleteObject(args[1], args.Skip(2));
                         }
+                        break;
+
+                    case "delete-archived":
+                        if (args.Length < 4 && PrintUsage()) return -1;
+                        DeleteFileArchivedGeneration.DeleteFileGeneration(args[1], args[2], Convert.ToInt64(args[3]));
                         break;
 
                     case "upload":

@@ -242,6 +242,28 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestDeleteFileArchivedGeneration()
+        {
+            var objectName = "HelloDeleteFileArchivedGeneration.txt";
+
+            //Uploaded for the first time
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            //TODO Get generation of the uploaded file
+            var fileArchivedGeneration = "1579287380533984";
+
+            //Uploaded for the second time, which archives the previous object.
+            uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            // Try deleting object with specified generation from bucket.
+            var del_archived = Run("delete-archived", _bucketName, objectName, fileArchivedGeneration);
+            Assert.Equal(409, del_archived.ExitCode);
+            AssertSucceeded(del_archived);
+        }
+
+        [Fact]
         public void TestListObjectsInBucket()
         {
             // Try listing the files.  There should be none.
