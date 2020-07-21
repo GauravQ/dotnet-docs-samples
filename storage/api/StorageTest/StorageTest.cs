@@ -259,7 +259,6 @@ namespace GoogleCloudSamples
 
             // Try deleting object with specified generation from bucket.
             var del_archived = Run("delete-archived", _bucketName, objectName, fileArchivedGeneration);
-            Assert.Equal(409, del_archived.ExitCode);
             AssertSucceeded(del_archived);
         }
 
