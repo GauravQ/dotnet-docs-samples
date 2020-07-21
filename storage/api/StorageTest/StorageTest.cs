@@ -248,7 +248,7 @@ namespace GoogleCloudSamples
             var notFoundPage = "404.html";
             // Try configuring bucket website with above values.
             var website_conf = Run("define-website", _bucketName, mainPageSuffix, notFoundPage);
-            Assert.Equal(409, website_conf.ExitCode);
+            AssertSucceeded(website_conf);
 
             // Try getting the metadata of the bucket.  We should find newly configured WebsiteData.
             Eventually(() =>
