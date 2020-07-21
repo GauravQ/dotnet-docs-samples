@@ -248,7 +248,7 @@ namespace GoogleCloudSamples
             var origin = "*";
             var method = "PUT";
             var cors_conf = Run("configure-cors", _bucketName);
-            Assert.Equal(409, cors_conf.ExitCode);
+            AssertSucceeded(cors_conf);
 
             // Try getting the metadata of the bucket.  We should find newly configured cors.
             Eventually(() =>
