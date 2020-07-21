@@ -248,7 +248,7 @@ namespace GoogleCloudSamples
             var labelValue = "example";
             // Try adding bucket label with above values.
             var add_label = Run("add-bucket-label", _bucketName, labelKey, labelValue);
-            Assert.Equal(409, add_label.ExitCode);
+            AssertSucceeded(add_label);
 
             // Try getting the metadata of the bucket.  We should find updated label.
             Eventually(() =>
