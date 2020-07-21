@@ -47,6 +47,7 @@ namespace GoogleCloudSamples
             "  Storage generate-signed-get-url-v4 bucket-name object-name\n" +
             "  Storage generate-signed-put-url-v4 bucket-name object-name\n" +
             "  Storage view-bucket-iam-members bucket-name\n" +
+            "  Storage add-bucket-label bucket-name label-key label-value\n" +
             "  Storage add-bucket-iam-member bucket-name role member\n" +
             "  Storage add-bucket-iam-conditional-binding bucket-name member\n" +
             "                              role member cond-title cond-description cond-expression\n" +
@@ -1622,6 +1623,10 @@ namespace GoogleCloudSamples
                     case "get-uniform-bucket-level-access":
                         if (args.Length < 2 && PrintUsage()) return -1;
                         GetUniformBucketLevelAccess(args[1]);
+                        break;
+
+                    case "add-bucket-label":
+                        AddBucketLabel.AddLabel(args[1], args[2], args[3]);
                         break;
 
                     default:
