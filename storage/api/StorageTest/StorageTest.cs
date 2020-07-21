@@ -242,6 +242,26 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestConfigureBucketCors()
+        {
+            // Try configuring cors for bucket.
+            var origin = "*";
+            var method = "PUT";
+            var cors_conf = Run("configure-cors", _bucketName);
+            Assert.Equal(409, cors_conf.ExitCode);
+
+            // Try getting the metadata of the bucket.  We should find newly configured cors.
+            Eventually(() =>
+            {
+                var bucketMetaData = Run("get-bucket-metadata", _bucketName);
+                AssertSucceeded(bucketMetaData);
+                Assert.Contains(_bucketName, bucketMetaData.Stdout);
+                Assert.Contains(origin, bucketMetaData.Stdout);
+                Assert.Contains(method, bucketMetaData.Stdout);
+            });
+        }
+
+        [Fact]
         public void TestListObjectsInBucket()
         {
             // Try listing the files.  There should be none.

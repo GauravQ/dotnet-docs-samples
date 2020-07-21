@@ -39,6 +39,7 @@ namespace GoogleCloudSamples
             "  Storage get-bucket-metadata bucket-name\n" +
             "  Storage make-public bucket-name object-name\n" +
             "  Storage upload [-key encryption-key] bucket-name local-file-path [object-name]\n" +
+            "  Storage configure-cors bucket-name\n" +
             "  Storage copy source-bucket-name source-object-name dest-bucket-name dest-object-name\n" +
             "  Storage move bucket-name source-object-name dest-object-name\n" +
             "  Storage download [-key encryption-key] bucket-name object-name [local-file-path]\n" +
@@ -1622,6 +1623,11 @@ namespace GoogleCloudSamples
                     case "get-uniform-bucket-level-access":
                         if (args.Length < 2 && PrintUsage()) return -1;
                         GetUniformBucketLevelAccess(args[1]);
+                        break;
+
+                    case "configure-cors":
+                        if (args.Length < 2 && PrintUsage()) return -1;
+                        ConfigureBucketCors.ConfigureCors(args[1]);
                         break;
 
                     default:
