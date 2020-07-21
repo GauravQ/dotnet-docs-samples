@@ -263,6 +263,14 @@ namespace GoogleCloudSamples
             });
         }
 
+        [Fact]
+        public void TestEnableVersioning()
+        {
+            // Try enabling versioning for bucket.
+            var en_version = Run("enable-versioning", _bucketName);
+            AssertSucceeded(en_version);
+        }
+
         public string[] SplitOutput(string stdout) =>
             stdout.Split('\n')
                 .Select((s) => s.Trim()).Where((s) => !string.IsNullOrEmpty(s))
