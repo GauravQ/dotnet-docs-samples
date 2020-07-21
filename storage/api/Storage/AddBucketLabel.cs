@@ -18,7 +18,7 @@ namespace Storage
 			bucket.Labels[labelKey] = labelValue;
 
 			storage.UpdateBucket(bucket);
-			Console.WriteLine($"Updated labels on {bucketName}.");
+			Console.WriteLine($"Updated label {labelKey} wih value {labelValue} on bucket {bucketName}.");
 		}
 		// [END storage_add_bucket_label]
 	}

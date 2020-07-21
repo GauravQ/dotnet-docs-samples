@@ -240,6 +240,26 @@ namespace GoogleCloudSamples
                 Assert.Contains(_bucketName, listed.Stdout);
             });
         }
+        
+        [Fact]
+        public void TestAddBucketLabel()
+        {
+            var labelKey = "text";
+            var labelValue = "example";
+            // Try adding bucket label with above values.
+            var add_label = Run("add-bucket-label", _bucketName, labelKey, labelValue);
+            Assert.Equal(409, add_label.ExitCode);
+
+            // Try getting the metadata of the bucket.  We should find updated label.
+            Eventually(() =>
+            {
+                var bucketMetaData = Run("get-bucket-metadata", _bucketName);
+                AssertSucceeded(bucketMetaData);
+                Assert.Contains(_bucketName, bucketMetaData.Stdout);
+                Assert.Contains(labelKey, bucketMetaData.Stdout);
+                Assert.Contains(labelValue, bucketMetaData.Stdout);
+            });
+        }
 
         [Fact]
         public void TestListObjectsInBucket()

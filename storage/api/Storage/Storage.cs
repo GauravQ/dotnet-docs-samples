@@ -298,6 +298,7 @@ namespace GoogleCloudSamples
             }
             Console.WriteLine($"Id:\t{bucket.Id}");
             Console.WriteLine($"Kind:\t{bucket.Kind}");
+            Console.WriteLine($"Labels:\t{bucket.Labels}");
             Console.WriteLine($"Lifecycle:\t{bucket.Lifecycle}");
             Console.WriteLine($"Location:\t{bucket.Location}");
             Console.WriteLine($"LocationType:\t{bucket.LocationType}");
