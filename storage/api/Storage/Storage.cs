@@ -41,7 +41,7 @@ namespace GoogleCloudSamples
             "  Storage upload [-key encryption-key] bucket-name local-file-path [object-name]\n" +
             "  Storage copy source-bucket-name source-object-name dest-bucket-name dest-object-name\n" +
             "  Storage move bucket-name source-object-name dest-object-name\n" +
-            "  Storage define-website [bucket-name] [main-page-suffix] [Not-found-page]\n" +
+            "  Storage define-website bucket-name [main-page-suffix] [Not-found-page]\n" +
             "  Storage download [-key encryption-key] bucket-name object-name [local-file-path]\n" +
             "  Storage download-byte-range bucket-name object-name range-begin range-end [local-file-path]\n" +
             "  Storage generate-signed-url bucket-name object-name\n" +
