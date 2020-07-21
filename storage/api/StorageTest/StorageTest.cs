@@ -244,11 +244,11 @@ namespace GoogleCloudSamples
         [Fact]
         public void TestBucketWebsiteConfiguration()
         {
-            var MainPageSuffix = "index.html";
-            var NotFoundPage = "404.html";
+            var mainPageSuffix = "index.html";
+            var notFoundPage = "404.html";
             // Try configuring bucket website with above values.
-            var created_again = Run("define-website", _bucketName, MainPageSuffix, NotFoundPage);
-            Assert.Equal(409, created_again.ExitCode);
+            var website_conf = Run("define-website", _bucketName, mainPageSuffix, notFoundPage);
+            Assert.Equal(409, website_conf.ExitCode);
 
             // Try getting the metadata of the bucket.  We should find newly configured WebsiteData.
             Eventually(() =>
@@ -256,8 +256,8 @@ namespace GoogleCloudSamples
                 var bucketMetaData = Run("get-bucket-metadata",_bucketName);
                 AssertSucceeded(bucketMetaData);
                 Assert.Contains(_bucketName, bucketMetaData.Stdout);
-                Assert.Contains(MainPageSuffix, bucketMetaData.Stdout);
-                Assert.Contains(NotFoundPage, bucketMetaData.Stdout);
+                Assert.Contains(mainPageSuffix, bucketMetaData.Stdout);
+                Assert.Contains(notFoundPage, bucketMetaData.Stdout);
             });
         }
 
