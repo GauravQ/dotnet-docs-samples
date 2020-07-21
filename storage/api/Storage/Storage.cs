@@ -1625,7 +1625,7 @@ namespace GoogleCloudSamples
                         GetUniformBucketLevelAccess(args[1]);
                         break;
 
-                    case "Enable-versioning":
+                    case "enable-versioning":
                         if (args.Length < 2 && PrintUsage()) return -1;
                         EnableVersioning.Enable(args[1]);
                         break;
