@@ -41,6 +41,7 @@ namespace GoogleCloudSamples
             "  Storage upload [-key encryption-key] bucket-name local-file-path [object-name]\n" +
             "  Storage copy source-bucket-name source-object-name dest-bucket-name dest-object-name\n" +
             "  Storage move bucket-name source-object-name dest-object-name\n" +
+            "  Storage define-website [bucket-name] [main-page-suffix] [Not-found-page]\n" +
             "  Storage download [-key encryption-key] bucket-name object-name [local-file-path]\n" +
             "  Storage download-byte-range bucket-name object-name range-begin range-end [local-file-path]\n" +
             "  Storage generate-signed-url bucket-name object-name\n" +
@@ -1624,6 +1625,10 @@ namespace GoogleCloudSamples
                         GetUniformBucketLevelAccess(args[1]);
                         break;
 
+                    case "define-website":
+                        BucketWebsiteConfigutation.ConfigureWebsite(args[1], args.Length < 3 ? GetDefaultMainPageSuffix() : args[2], args.Length < 4 ? GetDefaultNotFoundPage() : args[3]);
+                        break;
+
                     default:
                         PrintUsage();
                         return -1;
@@ -1653,6 +1658,16 @@ namespace GoogleCloudSamples
                 }
                 return new string(randomChars);
             }
+        }
+
+        private static string GetDefaultMainPageSuffix()
+        {
+            return "index.html";
+        }
+
+        private static string GetDefaultNotFoundPage()
+        {
+            return "404.html";
         }
     }
 }
