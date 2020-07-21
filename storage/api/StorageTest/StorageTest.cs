@@ -242,6 +242,26 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestBucketWebsiteConfiguration()
+        {
+            var MainPageSuffix = "index.html";
+            var NotFoundPage = "404.html";
+            // Try configuring bucket website with above values.
+            var created_again = Run("define-website", _bucketName, MainPageSuffix, NotFoundPage);
+            Assert.Equal(409, created_again.ExitCode);
+
+            // Try getting the metadata of the bucket.  We should find newly configured WebsiteData.
+            Eventually(() =>
+            {
+                var bucketMetaData = Run("get-bucket-metadata",_bucketName);
+                AssertSucceeded(bucketMetaData);
+                Assert.Contains(_bucketName, bucketMetaData.Stdout);
+                Assert.Contains(MainPageSuffix, bucketMetaData.Stdout);
+                Assert.Contains(NotFoundPage, bucketMetaData.Stdout);
+            });
+        }
+
+        [Fact]
         public void TestListObjectsInBucket()
         {
             // Try listing the files.  There should be none.

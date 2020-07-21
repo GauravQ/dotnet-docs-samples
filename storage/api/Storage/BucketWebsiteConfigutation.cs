@@ -32,7 +32,7 @@ namespace Storage
 			bucket.Website.MainPageSuffix = MainPageSuffix;
 			bucket.Website.NotFoundPage = NotFoundPage;
 			storage.UpdateBucket(bucket);
-			Console.WriteLine($"Website configured for bucket {bucketName}.");
+			Console.WriteLine($"Website configured for bucket {bucketName} with values {MainPageSuffix}, {NotFoundPage}.");
 		}
 		// [END storage_define_bucket_website_configuration]
 	}
