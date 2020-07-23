@@ -12,37 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START storage_cors_configuration]
+// [START storage_list_file_archived_generations]
 
 using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 using System.Collections.Generic;
 
-public class BucketCorsConfiguration
+public class ListFileArchivedGeneration
 {
-    public Bucket ConfigureCors(string bucketName)
+    public IEnumerable<Google.Apis.Storage.v1.Data.Object> ListAllFiles(string bucketName)
     {
         var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
 
-		Bucket.CorsData corsData = new Bucket.CorsData
-		{
-			Origin = new string[] { "*" },
-			ResponseHeader = new string[] { "Content-Type", "x-goog-resumable" },
-			Method = new string[] { "PUT", "POST" },
-			MaxAgeSeconds = 3600 //One Hour
-		};
+        var listOptions = new ListObjectsOptions {
+            Versions = true
+        };
+        var storageObjects = storage.ListObjects(bucketName, options: listOptions);
 
-		if (bucket.Cors == null)
-		{
-			bucket.Cors = new List<Bucket.CorsData>();
-		}
-		bucket.Cors.Add(corsData);
+        foreach (var storageObject in storageObjects)
+        {
+            Console.WriteLine($"Filename: {storageObject.Name}, Generation: {storageObject.Generation}");
+        }
 
-		bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Cors configured for bucket {bucketName} with Origin {corsData.Origin[0]}, Methods {corsData.Method[0]}.");
-        return bucket;
+        return storageObjects;
     }
 }
-// [END storage_cors_configuration]
+// [END storage_list_file_archived_generations]

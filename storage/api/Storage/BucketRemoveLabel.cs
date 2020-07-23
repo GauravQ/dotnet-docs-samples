@@ -12,29 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START storage_add_bucket_label]
+// [START storage_remove_bucket_label]
 
 using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
-using System.Collections.Generic;
 
-public class BucketAddLabel
+public class BucketRemoveLabel
 {
-    public Bucket AddLabel(string bucketName, string labelKey, string labelValue)
+    public Bucket RemoveLabel(string bucketName, string labelKey)
     {
         var storage = StorageClient.Create();
         var bucket = storage.GetBucket(bucketName);
 
-        if (bucket.Labels == null)
+        if (bucket.Labels != null && bucket.Labels.Keys.Contains(labelKey))
         {
-            bucket.Labels = new Dictionary<string, string>();
+            bucket.Labels.Remove(labelKey);
+            bucket = storage.UpdateBucket(bucket);
+            Console.WriteLine($"Removed label {labelKey} from {bucketName}.");
         }
-        bucket.Labels[labelKey] = labelValue;
-
-        bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Added label {labelKey} on {bucketName}.");
+        else
+        {
+            Console.WriteLine($"No such label available on {bucketName}.");
+        }
         return bucket;
     }
 }
-// [END storage_add_bucket_label]
+// [END storage_remove_bucket_label]

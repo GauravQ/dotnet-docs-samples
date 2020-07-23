@@ -12,29 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START storage_add_bucket_label]
+// [START storage_remove_cors_configuration]
 
 using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
-using System.Collections.Generic;
 
-public class BucketAddLabel
+public class BucketRemoveCorsConfiguration
 {
-    public Bucket AddLabel(string bucketName, string labelKey, string labelValue)
+    public Bucket RemoveCors(string bucketName)
     {
         var storage = StorageClient.Create();
         var bucket = storage.GetBucket(bucketName);
 
-        if (bucket.Labels == null)
-        {
-            bucket.Labels = new Dictionary<string, string>();
+		if (bucket.Cors != null)
+		{
+			bucket.Cors = null;
+            bucket = storage.UpdateBucket(bucket);
+            Console.WriteLine($"All Cors removed from bucket {bucketName}.");
         }
-        bucket.Labels[labelKey] = labelValue;
 
-        bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Added label {labelKey} on {bucketName}.");
         return bucket;
     }
 }
-// [END storage_add_bucket_label]
+// [END storage_remove_cors_configuration]

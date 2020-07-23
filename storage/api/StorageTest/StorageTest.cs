@@ -255,16 +255,24 @@ namespace GoogleCloudSamples
         }
         
         [Fact]
-        public void TestBucketAddLabel()
+        public void TestBucketAddRemoveLabel()
         {
             var labelKey = "usage";
             var labelValue = "chat-attachments";
 
-            var bucketLabel = new BucketAddLabel();
-            var bucket = bucketLabel.AddLabel(_bucketName, labelKey, labelValue);
+            //Add Label
+            var bucketAddLabel = new BucketAddLabel();
+            var bucket = bucketAddLabel.AddLabel(_bucketName, labelKey, labelValue);
 
             Assert.True(bucket.Labels.Keys.Contains(labelKey));
             Assert.Equal(labelValue, bucket.Labels[labelKey]);
+
+
+            //Remove Label
+            var bucketRemoveLabel = new BucketRemoveLabel();
+            bucket = bucketRemoveLabel.RemoveLabel(_bucketName, labelKey);
+
+            Assert.Null(bucket.Labels);
         }
 
         [Fact]
@@ -316,16 +324,23 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
-        public void TestBucketCorsConfiguration()
+        public void TestBucketAddRemoveCorsConfiguration()
         {
-            var corsConf = new BucketCorsConfiguration();
+            //Add Cors Configuration
+            var addCors = new BucketAddCorsConfiguration();
+            var bucket = addCors.ConfigureCors(_bucketName);
 
-            var bucket = corsConf.ConfigureCors(_bucketName);
             Assert.NotNull(bucket.Cors);
             Assert.Equal(1, bucket.Cors.Count);
             Assert.Equal("*", bucket.Cors[0].Origin[0]);
             Assert.Equal("PUT", bucket.Cors[0].Method[0]);
             Assert.Equal(3600, bucket.Cors[0].MaxAgeSeconds);
+
+            //Remove Cors Configurations
+            var removeCors = new BucketRemoveCorsConfiguration();
+            bucket = removeCors.RemoveCors(_bucketName);
+
+            Assert.Null(bucket.Cors);
         }
         
         [Fact]
@@ -410,7 +425,53 @@ namespace GoogleCloudSamples
                 deleteFileArchived.Delete(_bucketName, objectName, fileCurrentGeneration);
             }
         }
-       
+
+        [Fact]
+        public void TestListFileArchivedGeneration()
+        {
+            var objectName = "HelloListFileArchivedGeneration.txt";
+
+            //Enable bucket versioning
+            var bucketEnableVersioning = new BucketEnableVersioning();
+            bucketEnableVersioning.Enable(_bucketName);
+
+            //Uploaded for the first time
+            Run("upload", _bucketName, "Hello.txt", objectName);
+
+            //Upload again to archive previous generation.
+            Run("upload", _bucketName, "HelloUpdated.txt", objectName);
+
+            var fileArchivedGeneration = (long?) 0;
+            var fileCurrentGeneration = (long?) 0;
+
+            try
+            {
+                var listFileArchived = new ListFileArchivedGeneration();
+                var objects = listFileArchived.ListAllFiles(_bucketName);
+
+                Assert.Equal(2, objects.Count(a => a.Name == objectName));
+
+                //For garbage collection later
+                var testFiles = objects.Where(a => a.Name == objectName).ToList();
+                fileArchivedGeneration = testFiles[0].Generation;
+                fileCurrentGeneration = testFiles[1].Generation;
+            }
+            finally
+            {
+                //Disable bucket versioning
+                var bucketDisableVersioning = new BucketDisableVersioning();
+                bucketDisableVersioning.Disable(_bucketName);
+
+                //For garbage collection of files with versioning enabled.
+
+                //Delete first generation of the file
+                var deleteFileArchived = new DeleteFileArchivedGeneration();
+                deleteFileArchived.Delete(_bucketName, objectName, fileArchivedGeneration);
+                //Delete second generation of the file
+                deleteFileArchived.Delete(_bucketName, objectName, fileCurrentGeneration);
+            }
+        }
+
         [Fact]
         public void TestDeleteFileArchivedGeneration()
         {
