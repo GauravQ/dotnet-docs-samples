@@ -14,10 +14,8 @@
 
 // [START storage_copy_file_archived_generation]
 
-using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
-using System.Collections.Generic;
 
 public class CopyFileArchivedGeneration
 {
@@ -25,8 +23,10 @@ public class CopyFileArchivedGeneration
 			string destBucketName, string destObjectName, long? generation)
 	{
 		var storage = StorageClient.Create();
-		var copyOptions = new CopyObjectOptions();
-		copyOptions.SourceGeneration = generation;
+		var copyOptions = new CopyObjectOptions
+		{
+			SourceGeneration = generation
+		};
 
 		var copiedFile = storage.CopyObject(sourceBucketName, sourceObjectName,
 			destBucketName, destObjectName, copyOptions);

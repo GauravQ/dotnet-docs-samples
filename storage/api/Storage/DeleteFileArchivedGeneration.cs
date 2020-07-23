@@ -14,18 +14,18 @@
 
 // [START storage_delete_file_archived_generation]
 
-using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
-using System.Collections.Generic;
 
 public class DeleteFileArchivedGeneration
 {
     public void Delete(string bucketName, string objectName, long? generation)
     {
         var storage = StorageClient.Create();
-        var deleteOptions = new DeleteObjectOptions();
-        deleteOptions.Generation = generation;
+        var deleteOptions = new DeleteObjectOptions
+        {
+            Generation = generation
+        };
 
         storage.DeleteObject(bucketName, objectName, deleteOptions);
 

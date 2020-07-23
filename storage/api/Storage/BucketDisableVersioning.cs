@@ -24,6 +24,7 @@ public class BucketDisableVersioning
     {
         var storage = StorageClient.Create();
         var bucket = storage.GetBucket(bucketName);
+
         if (bucket.Versioning == null)
         {
             bucket.Versioning = new Bucket.VersioningData();

@@ -252,14 +252,13 @@ namespace GoogleCloudSamples
 
             Assert.Equal(mainPageSuffix, bucket.Website.MainPageSuffix);
             Assert.Equal(notFoundPage, bucket.Website.NotFoundPage);
-
         }
         
         [Fact]
         public void TestBucketAddLabel()
         {
-            var labelKey = "text";
-            var labelValue = "example";
+            var labelKey = "usage";
+            var labelValue = "chat-attachments";
 
             var bucketLabel = new BucketAddLabel();
             var bucket = bucketLabel.AddLabel(_bucketName, labelKey, labelValue);
@@ -278,7 +277,7 @@ namespace GoogleCloudSamples
             Assert.Equal(StorageClasses.Coldline, bucket.StorageClass);
 
             //Change it back to standard
-            bucket = changeClass.ChangeStorageClass(_bucketName);
+            bucket = changeClass.ChangeStorageClass(_bucketName, StorageClasses.Standard);
             Assert.Equal(StorageClasses.Standard, bucket.StorageClass);
         }
         
@@ -297,7 +296,7 @@ namespace GoogleCloudSamples
             Assert.Equal(StorageClasses.Coldline, file.StorageClass);
 
             //Change it back to standard
-            file = changeClass.ChangeStorageClass(_bucketName, objectName);
+            file = changeClass.ChangeStorageClass(_bucketName, objectName, StorageClasses.Standard);
             Assert.Equal(StorageClasses.Coldline, file.StorageClass);
         }
         
@@ -341,7 +340,7 @@ namespace GoogleCloudSamples
             var madePublic = Run("make-public", _bucketName, objectName);
             AssertSucceeded(madePublic);
 
-            var location = "";
+            var location = string.Empty;
             try
             {
                 //Try downloading without creds 
@@ -441,8 +440,10 @@ namespace GoogleCloudSamples
             deleteFileArchived.Delete(_bucketName, objectName, fileArchivedGeneration);
 
             //First generation of file should not exist And GetObject should throw error
-            var getObjectOptions = new GetObjectOptions();
-            getObjectOptions.Generation = fileArchivedGeneration;
+            var getObjectOptions = new GetObjectOptions
+            {
+                Generation = fileArchivedGeneration
+            };
             Assert.Throws<Google.GoogleApiException>(() => storage.GetObject(_bucketName, objectName, getObjectOptions));
 
             //Second generation of file should still exist

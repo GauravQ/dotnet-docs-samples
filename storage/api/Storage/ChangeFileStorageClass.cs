@@ -14,19 +14,19 @@
 
 // [START storage_change_file_storage_class]
 
-using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
 public class ChangeFileStorageClass
 {
-	public Google.Apis.Storage.v1.Data.Object ChangeStorageClass(string bucketName, string objectName, string storageClass = "")
+	public Google.Apis.Storage.v1.Data.Object ChangeStorageClass(string bucketName, string objectName, string storageClass)
 	{
 		if (string.IsNullOrEmpty(storageClass))
 			storageClass = StorageClasses.Standard;
 
 		var storage = StorageClient.Create();
 		var file = storage.GetObject(bucketName, objectName);
+
 		file.StorageClass = storageClass;
 
 		//Update failing when changing StorageClass

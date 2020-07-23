@@ -20,18 +20,20 @@ using System;
 
 public class BucketWebsiteConfigutation
 {
-	public Bucket ConfigureWebsite(string bucketName, string MainPageSuffix, string NotFoundPage)
+	public Bucket ConfigureWebsite(string bucketName, string mainPageSuffix, string notFoundPage)
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);
+
 		if (bucket.Website == null)
 		{
 			bucket.Website = new Bucket.WebsiteData();
 		}
-		bucket.Website.MainPageSuffix = MainPageSuffix;
-		bucket.Website.NotFoundPage = NotFoundPage;
+		bucket.Website.MainPageSuffix = mainPageSuffix;
+		bucket.Website.NotFoundPage = notFoundPage;
+
 		bucket = storage.UpdateBucket(bucket);
-		Console.WriteLine($"Website configured for bucket {bucketName} with values {MainPageSuffix}, {NotFoundPage}.");
+		Console.WriteLine($"Website configured for bucket {bucketName} with values {mainPageSuffix}, {notFoundPage}.");
 		return bucket;
 	}
 }

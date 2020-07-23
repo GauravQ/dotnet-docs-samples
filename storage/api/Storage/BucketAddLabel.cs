@@ -25,6 +25,7 @@ public class BucketAddLabel
     {
         var storage = StorageClient.Create();
         var bucket = storage.GetBucket(bucketName);
+
         if (bucket.Labels == null)
         {
             bucket.Labels = new Dictionary<string, string>();

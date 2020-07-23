@@ -20,7 +20,7 @@ using System;
 
 public class ChangeDefaultStorageClass
 {
-	public Bucket ChangeStorageClass(string bucketName, string storageClass = "")
+	public Bucket ChangeStorageClass(string bucketName, string storageClass)
 	{
 		if (string.IsNullOrEmpty(storageClass))
 			storageClass = StorageClasses.Standard;

@@ -23,11 +23,13 @@ public class DownloadPublicFile
     public string Download(string bucketName, string objectName, string localPath = null)
     {
         var storage = StorageClient.CreateUnauthenticated();
+
         localPath = localPath ?? Path.GetFileName(objectName);
         using (var outputFile = File.OpenWrite(localPath))
         {
             storage.DownloadObject(bucketName, objectName, outputFile);
         }
+
         Console.WriteLine($"downloaded public file {objectName} to {localPath}.");
         return localPath;
     }

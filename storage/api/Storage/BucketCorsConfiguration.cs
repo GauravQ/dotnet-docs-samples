@@ -25,12 +25,14 @@ public class BucketCorsConfiguration
     {
         var storage = StorageClient.Create();
         var bucket = storage.GetBucket(bucketName);
-		
-		Bucket.CorsData corsData = new Bucket.CorsData();
-		corsData.Origin = new string[] { "*" };
-		corsData.ResponseHeader = new string[] { "Content-Type", "x-goog-resumable" };
-		corsData.Method = new string[] { "PUT", "POST" };
-		corsData.MaxAgeSeconds = 3600; //One Hour
+
+		Bucket.CorsData corsData = new Bucket.CorsData
+		{
+			Origin = new string[] { "*" },
+			ResponseHeader = new string[] { "Content-Type", "x-goog-resumable" },
+			Method = new string[] { "PUT", "POST" },
+			MaxAgeSeconds = 3600 //One Hour
+		};
 
 		if (bucket.Cors == null)
 		{
