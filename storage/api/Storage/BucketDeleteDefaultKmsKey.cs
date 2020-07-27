@@ -21,18 +21,18 @@ using System;
 public class BucketDeleteDefaultKmsKey
 {
 	public Bucket RemoveKMSKey(string bucketName)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
-        if(bucket.Encryption != null)
-        {
-            bucket.Encryption.DefaultKmsKeyName = string.Empty;
-            bucket = storage.UpdateBucket(bucket);
-            Console.WriteLine($"Removed default kms key from bucket {bucketName}");
-        }
+		if (bucket.Encryption != null)
+		{
+			bucket.Encryption.DefaultKmsKeyName = string.Empty;
+			bucket = storage.UpdateBucket(bucket);
+			Console.WriteLine($"Removed default kms key from bucket {bucketName}");
+		}
 
-        return bucket;
+		return bucket;
 	}
 }
 // [END storage_bucket_delete_default_kms_key]

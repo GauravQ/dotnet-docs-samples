@@ -25,7 +25,7 @@ public class ObjectGetKMSKey
 		var file = storage.GetObject(bucketName, objectName);
 
 		var keyName = file.KmsKeyName;
-		
+
 		Console.WriteLine($"KMS key name for object {objectName} is {keyName}");
 		return keyName;
 	}

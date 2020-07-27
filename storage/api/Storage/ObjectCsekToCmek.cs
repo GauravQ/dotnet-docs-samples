@@ -21,30 +21,30 @@ using System.IO;
 public class ObjectCsekToCmek
 {
 	public void ChangeCsekToCmek(string projectId, string bucketName, string objectName, string currrentEncryKey, string keyLocation, string kmsKeyRing, string kmsKeyName)
-    {
-        string KeyPrefix = $"projects/{projectId}/locations/{keyLocation}";
-        string FullKeyringName = $"{KeyPrefix}/keyRings/{kmsKeyRing}";
-        string FullKeyName = $"{FullKeyringName}/cryptoKeys/{kmsKeyName}";
-        var storage = StorageClient.Create();
+	{
+		string keyPrefix = $"projects/{projectId}/locations/{keyLocation}";
+		string fullKeyringName = $"{keyPrefix}/keyRings/{kmsKeyRing}";
+		string fullKeyName = $"{fullKeyringName}/cryptoKeys/{kmsKeyName}";
+		var storage = StorageClient.Create();
 
-        using (var outputStream = new MemoryStream())
-        {
-            storage.DownloadObject(bucketName, objectName, outputStream,
-                new DownloadObjectOptions()
-                {
-                    EncryptionKey = EncryptionKey.Create(
-                        Convert.FromBase64String(currrentEncryKey))
-                });
+		using (var outputStream = new MemoryStream())
+		{
+			storage.DownloadObject(bucketName, objectName, outputStream,
+				new DownloadObjectOptions()
+				{
+					EncryptionKey = EncryptionKey.Create(
+						Convert.FromBase64String(currrentEncryKey))
+				});
 
-            outputStream.Position = 0;
-            
-            storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
-            {
-                KmsKeyName = FullKeyName
-            });
-        }
+			outputStream.Position = 0;
 
-        Console.WriteLine($"Encryption key changed from CSEK to CMEK for object {objectName} in bucket {bucketName}");
+			storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
+			{
+				KmsKeyName = fullKeyName
+			});
+		}
+
+		Console.WriteLine($"Encryption key changed from CSEK to CMEK for object {objectName} in bucket {bucketName}");
 	}
 }
 // [END storage_object_csek_to_cmek]

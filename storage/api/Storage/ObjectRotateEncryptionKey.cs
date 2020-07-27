@@ -21,28 +21,28 @@ using System.IO;
 public class ObjectRotateEncryptionKey
 {
 	public void ChangeEncryKey(string bucketName, string objectName, string currrentEncryKey, string newEncrykey)
-    {
-        var storage = StorageClient.Create();
+	{
+		var storage = StorageClient.Create();
 
-        using (var outputStream = new MemoryStream())
-        {
-            storage.DownloadObject(bucketName, objectName, outputStream,
-                new DownloadObjectOptions()
-                {
-                    EncryptionKey = EncryptionKey.Create(
-                        Convert.FromBase64String(currrentEncryKey))
-                });
+		using (var outputStream = new MemoryStream())
+		{
+			storage.DownloadObject(bucketName, objectName, outputStream,
+				new DownloadObjectOptions()
+				{
+					EncryptionKey = EncryptionKey.Create(
+						Convert.FromBase64String(currrentEncryKey))
+				});
 
-            outputStream.Position = 0;
-            
-            storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
-            {
-                EncryptionKey = EncryptionKey.Create(
-                        Convert.FromBase64String(newEncrykey))
-            });
-        }
+			outputStream.Position = 0;
 
-        Console.WriteLine($"Encryption key changed from {currrentEncryKey} to {newEncrykey} for object {objectName} in bucket {bucketName}");
+			storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
+			{
+				EncryptionKey = EncryptionKey.Create(
+						Convert.FromBase64String(newEncrykey))
+			});
+		}
+
+		Console.WriteLine($"Encryption key changed from {currrentEncryKey} to {newEncrykey} for object {objectName} in bucket {bucketName}");
 	}
 }
 // [END storage_rotate_encryption_key]

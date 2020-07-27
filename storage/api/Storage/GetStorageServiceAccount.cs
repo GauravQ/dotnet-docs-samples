@@ -22,7 +22,7 @@ public class GetStorageServiceAccount
 	public string GetAccountEmail(string projectId)
 	{
 		var storage = StorageClient.Create();
-		
+
 		var serviceAccountEmail = storage.GetStorageServiceAccountEmail(projectId);
 
 		Console.WriteLine($"The GCS service account for project {projectId} is: {serviceAccountEmail}.");

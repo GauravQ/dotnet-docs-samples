@@ -23,28 +23,28 @@ using System.Linq;
 public class BucketSetPublicIam
 {
 	public void SetPublicAccess(string bucketName)
-    {
-        var role = "roles/storage.objectViewer";
+	{
+		var role = "roles/storage.objectViewer";
 
-        var storage = StorageClient.Create();
+		var storage = StorageClient.Create();
 
 		var bucketPolicy = storage.GetBucketIamPolicy(bucketName);
 
-        Policy policy = storage.GetBucketIamPolicy(bucketName);
-        Policy.BindingsData binding = policy.Bindings
-            .Where(b => b.Role == role)
-            .FirstOrDefault();
+		Policy policy = storage.GetBucketIamPolicy(bucketName);
+		Policy.BindingsData binding = policy.Bindings
+			.Where(b => b.Role == role)
+			.FirstOrDefault();
 
-        if (binding == null)
-        {
-            binding = new Policy.BindingsData { Role = role, Members = new List<string> { } };
-            policy.Bindings.Add(binding);
-        }
-        binding.Members.Add("allUsers");
+		if (binding == null)
+		{
+			binding = new Policy.BindingsData { Role = role, Members = new List<string> { } };
+			policy.Bindings.Add(binding);
+		}
+		binding.Members.Add("allUsers");
 
-        storage.SetBucketIamPolicy(bucketName, policy);
+		storage.SetBucketIamPolicy(bucketName, policy);
 
-        Console.WriteLine($"bucket {bucketName} is now publicly accessible.");
+		Console.WriteLine($"bucket {bucketName} is now publicly accessible.");
 	}
 }
 // [END storage_set_bucket_public_iam]
