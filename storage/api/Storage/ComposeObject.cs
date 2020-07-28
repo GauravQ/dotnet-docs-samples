@@ -22,6 +22,12 @@ using System.IO;
 
 public class ComposeObject
 {
+	/// <summary>
+	/// Concatenate source files into destination file
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Destination file name</param>
+	/// <param name="files">List of source file names (should be from the same bucket)</param>
 	public void ComposeFile(string bucketName, string objectName, string[] files)
 	{
 		var storage = StorageClient.Create();

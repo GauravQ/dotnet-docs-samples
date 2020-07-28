@@ -22,7 +22,11 @@ using System.Linq;
 
 public class BucketSetPublicIam
 {
-	public void SetPublicAccess(string bucketName)
+	/// <summary>
+	/// Set a public IAM Policy to bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	public void SetPublicAccess(string bucketName = "your-bucket-name")
 	{
 		var role = "roles/storage.objectViewer";
 

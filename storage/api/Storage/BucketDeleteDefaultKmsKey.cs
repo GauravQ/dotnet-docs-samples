@@ -20,7 +20,12 @@ using System;
 
 public class BucketDeleteDefaultKmsKey
 {
-	public Bucket RemoveKMSKey(string bucketName)
+	/// <summary>
+	/// Delete a default KMS key of bucket 
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket RemoveKMSKey(string bucketName = "your-bucket-name")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);

@@ -20,7 +20,14 @@ using System.IO;
 
 public class ObjectRotateEncryptionKey
 {
-	public void ChangeEncryKey(string bucketName, string objectName, string currrentEncryKey, string newEncrykey)
+	/// <summary>
+	/// Performs a key rotation by re-writing an encrypted blob with a new encryption key
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Name of your object</param>
+	/// <param name="currrentEncryKey">Current encryption key</param>
+	/// <param name="newEncrykey">Current encryption key</param>
+	public void ChangeEncryKey(string bucketName = "your-bucket-name", string objectName = "your-object-name", string currrentEncryKey = "TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=", string newEncrykey = "ARbt/judaq+VmtXzAsc83J4z5kFmWJ6NdAPQuleuB7g=")
 	{
 		var storage = StorageClient.Create();
 

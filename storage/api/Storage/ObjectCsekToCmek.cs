@@ -20,7 +20,17 @@ using System.IO;
 
 public class ObjectCsekToCmek
 {
-	public void ChangeCsekToCmek(string projectId, string bucketName, string objectName, string currrentEncryKey, string keyLocation, string kmsKeyRing, string kmsKeyName)
+	/// <summary>
+	/// Change an object's customer-supplied encryption key to KMS key
+	/// </summary>
+	/// <param name="projectId">Your google cloud project ID</param>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Name of your object</param>
+	/// <param name="currrentEncryKey">Customer-supplied encryption key</param>
+	/// <param name="keyLocation">KMS key location</param>
+	/// <param name="kmsKeyRing">KMS key ring</param>
+	/// <param name="kmsKeyName">KMS key name</param>
+	public void ChangeCsekToCmek(string projectId = "your-project-id", string bucketName = "your-bucket-name", string objectName = "your-object-name", string currrentEncryKey = "TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=", string keyLocation = "us-west1", string kmsKeyRing = "kms-key-ring", string kmsKeyName = "key-name")
 	{
 		string keyPrefix = $"projects/{projectId}/locations/{keyLocation}";
 		string fullKeyringName = $"{keyPrefix}/keyRings/{kmsKeyRing}";

@@ -19,7 +19,13 @@ using System;
 
 public class ObjectGetKMSKey
 {
-	public string GetKeyName(string bucketName, string objectName)
+	/// <summary>
+	/// Retrieve the KMS key of an object
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Name of your object</param>
+	/// <returns>string containing KMS key name</returns>
+	public string GetKeyName(string bucketName = "your-bucket-name", string objectName = "your-object-name")
 	{
 		var storage = StorageClient.Create();
 		var file = storage.GetObject(bucketName, objectName);

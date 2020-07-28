@@ -19,7 +19,12 @@ using System;
 
 public class GetStorageServiceAccount
 {
-	public string GetAccountEmail(string projectId)
+	/// <summary>
+	/// Get the service account email
+	/// </summary>
+	/// <param name="projectId">Your google cloud project ID</param>
+	/// <returns>string containing account email</returns>
+	public string GetAccountEmail(string projectId = "your-project-id")
 	{
 		var storage = StorageClient.Create();
 
