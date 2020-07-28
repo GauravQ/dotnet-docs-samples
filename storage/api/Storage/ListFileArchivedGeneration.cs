@@ -21,21 +21,27 @@ using System.Collections.Generic;
 
 public class ListFileArchivedGeneration
 {
-    public IEnumerable<Google.Apis.Storage.v1.Data.Object> ListAllFiles(string bucketName)
-    {
-        var storage = StorageClient.Create();
+	/// <summary>
+	/// Lists all the objects in the bucket with generation
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <returns>Enumerable collection of Storage objects</returns>
+	public IEnumerable<Google.Apis.Storage.v1.Data.Object> ListAllFiles(string bucketName = "your-bucket-name")
+	{
+		var storage = StorageClient.Create();
 
-        var listOptions = new ListObjectsOptions {
-            Versions = true
-        };
-        var storageObjects = storage.ListObjects(bucketName, options: listOptions);
+		var listOptions = new ListObjectsOptions
+		{
+			Versions = true
+		};
+		var storageObjects = storage.ListObjects(bucketName, options: listOptions);
 
-        foreach (var storageObject in storageObjects)
-        {
-            Console.WriteLine($"Filename: {storageObject.Name}, Generation: {storageObject.Generation}");
-        }
+		foreach (var storageObject in storageObjects)
+		{
+			Console.WriteLine($"Filename: {storageObject.Name}, Generation: {storageObject.Generation}");
+		}
 
-        return storageObjects;
-    }
+		return storageObjects;
+	}
 }
 // [END storage_list_file_archived_generations]

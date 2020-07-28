@@ -20,18 +20,25 @@ using System.IO;
 
 public class DownloadPublicFile
 {
-    public string Download(string bucketName, string objectName, string localPath = null)
-    {
-        var storage = StorageClient.CreateUnauthenticated();
+	/// <summary>
+	/// Downloads a public object from the bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Name of your object</param>
+	/// <param name="localPath">(OPTIONAL) Local Path where file will be downloaded</param>
+	/// <returns>string containing local path of the downloaded file</returns>
+	public string Download(string bucketName = "your-bucket-name", string objectName = "your-object-name", string localPath = null)
+	{
+		var storage = StorageClient.CreateUnauthenticated();
 
-        localPath = localPath ?? Path.GetFileName(objectName);
-        using (var outputFile = File.OpenWrite(localPath))
-        {
-            storage.DownloadObject(bucketName, objectName, outputFile);
-        }
+		localPath = localPath ?? Path.GetFileName(objectName);
+		using (var outputFile = File.OpenWrite(localPath))
+		{
+			storage.DownloadObject(bucketName, objectName, outputFile);
+		}
 
-        Console.WriteLine($"downloaded public file {objectName} to {localPath}.");
-        return localPath;
-    }
+		Console.WriteLine($"downloaded public file {objectName} to {localPath}.");
+		return localPath;
+	}
 }
 // [END storage_download_public_file]

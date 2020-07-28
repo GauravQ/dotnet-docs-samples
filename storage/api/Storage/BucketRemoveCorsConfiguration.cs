@@ -20,19 +20,24 @@ using System;
 
 public class BucketRemoveCorsConfiguration
 {
-    public Bucket RemoveCors(string bucketName)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	/// <summary>
+	/// Remove a bucket's CORS policies configuration
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket RemoveCors(string bucketName = "your-bucket-name")
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
 		if (bucket.Cors != null)
 		{
 			bucket.Cors = null;
-            bucket = storage.UpdateBucket(bucket);
-            Console.WriteLine($"All Cors removed from bucket {bucketName}.");
-        }
+			bucket = storage.UpdateBucket(bucket);
+			Console.WriteLine($"All Cors removed from bucket {bucketName}.");
+		}
 
-        return bucket;
-    }
+		return bucket;
+	}
 }
 // [END storage_remove_cors_configuration]

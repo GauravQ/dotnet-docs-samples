@@ -19,8 +19,16 @@ using System;
 
 public class CopyFileArchivedGeneration
 {
-    public Google.Apis.Storage.v1.Data.Object Copy(string sourceBucketName, string sourceObjectName,
-			string destBucketName, string destObjectName, long? generation)
+	/// <summary>
+	/// Copies an object from one bucket to another with a new name with the same generation
+	/// </summary>
+	/// <param name="sourceBucketName">The name of the bucket containing the object to copy.</param>
+	/// <param name="sourceObjectName">The name of the object to copy within the bucket.</param>
+	/// <param name="destBucketName">The name of the bucket to copy the object to.</param>
+	/// <param name="destObjectName">The name of the object within the destination bucket.</param>
+	/// <param name="generation">Generation of the source object</param>
+	/// <returns>Storage object</returns>
+	public Google.Apis.Storage.v1.Data.Object Copy(string sourceBucketName = "source-bucket-name", string sourceObjectName = "source-file", string destBucketName = "destination-bucket-name", string destObjectName = "destination-file-name", long? generation = 1579287380533984)
 	{
 		var storage = StorageClient.Create();
 		var copyOptions = new CopyObjectOptions
@@ -33,7 +41,7 @@ public class CopyFileArchivedGeneration
 
 		Console.WriteLine($"Copied {sourceBucketName}/{sourceObjectName} gen {generation} to "
 			+ $"{destBucketName}/{destObjectName}.");
-		
+
 		return copiedFile;
 	}
 }

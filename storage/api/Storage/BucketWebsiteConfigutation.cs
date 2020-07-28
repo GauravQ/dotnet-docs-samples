@@ -20,7 +20,14 @@ using System;
 
 public class BucketWebsiteConfigutation
 {
-	public Bucket ConfigureWebsite(string bucketName, string mainPageSuffix, string notFoundPage)
+	/// <summary>
+	/// Configure website-related properties of bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="mainPageSuffix">File name of main page in a directory</param>
+	/// <param name="notFoundPage">File name of a 404 page</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket ConfigureWebsite(string bucketName = "your-bucket-name", string mainPageSuffix = "index.html", string notFoundPage = "404.html")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);

@@ -20,20 +20,25 @@ using System;
 
 public class BucketEnableVersioning
 {
-    public Bucket Enable(string bucketName)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	/// <summary>
+	/// Enable versioning for this bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket Enable(string bucketName = "your-bucket-name")
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
-        if (bucket.Versioning == null)
-        {
-            bucket.Versioning = new Bucket.VersioningData();
-        }
-        bucket.Versioning.Enabled = true;
+		if (bucket.Versioning == null)
+		{
+			bucket.Versioning = new Bucket.VersioningData();
+		}
+		bucket.Versioning.Enabled = true;
 
-        bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Versioning enabled for bucket {bucketName}.");
-        return bucket;
-    }
+		bucket = storage.UpdateBucket(bucket);
+		Console.WriteLine($"Versioning enabled for bucket {bucketName}.");
+		return bucket;
+	}
 }
 // [END storage_enable_versioning]

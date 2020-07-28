@@ -19,17 +19,23 @@ using System;
 
 public class DeleteFileArchivedGeneration
 {
-    public void Delete(string bucketName, string objectName, long? generation)
-    {
-        var storage = StorageClient.Create();
-        var deleteOptions = new DeleteObjectOptions
-        {
-            Generation = generation
-        };
+	/// <summary>
+	/// Delete an object in the bucket with the given generation
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Name of your object</param>
+	/// <param name="generation">Generation of the object</param>
+	public void Delete(string bucketName = "your-bucket-name", string objectName = "your-object-name", long? generation = 1579287380533984)
+	{
+		var storage = StorageClient.Create();
+		var deleteOptions = new DeleteObjectOptions
+		{
+			Generation = generation
+		};
 
-        storage.DeleteObject(bucketName, objectName, deleteOptions);
+		storage.DeleteObject(bucketName, objectName, deleteOptions);
 
-        Console.WriteLine($"Deleted file {objectName} gen {generation} from bucket {bucketName}.");
-    }
+		Console.WriteLine($"Deleted file {objectName} gen {generation} from bucket {bucketName}.");
+	}
 }
 // [END storage_delete_file_archived_generation]

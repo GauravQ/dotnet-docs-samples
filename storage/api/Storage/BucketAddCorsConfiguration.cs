@@ -21,10 +21,15 @@ using System.Collections.Generic;
 
 public class BucketAddCorsConfiguration
 {
-    public Bucket ConfigureCors(string bucketName)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	/// <summary>
+	/// Set a bucket's CORS policies configuration
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket ConfigureCors(string bucketName = "your-bucket-name")
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
 		Bucket.CorsData corsData = new Bucket.CorsData
 		{
@@ -41,8 +46,8 @@ public class BucketAddCorsConfiguration
 		bucket.Cors.Add(corsData);
 
 		bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Cors configured for bucket {bucketName} with Origin {corsData.Origin[0]}, Methods {corsData.Method[0]}.");
-        return bucket;
-    }
+		Console.WriteLine($"Cors configured for bucket {bucketName} with Origin {corsData.Origin[0]}, Methods {corsData.Method[0]}.");
+		return bucket;
+	}
 }
 // [END storage_cors_configuration]

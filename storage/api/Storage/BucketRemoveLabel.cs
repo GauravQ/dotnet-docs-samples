@@ -20,22 +20,28 @@ using System;
 
 public class BucketRemoveLabel
 {
-    public Bucket RemoveLabel(string bucketName, string labelKey)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	/// <summary>
+	/// Remove a label from a bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="labelKey">Label key</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket RemoveLabel(string bucketName = "your-bucket-name", string labelKey = "usage")
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
-        if (bucket.Labels != null && bucket.Labels.Keys.Contains(labelKey))
-        {
-            bucket.Labels.Remove(labelKey);
-            bucket = storage.UpdateBucket(bucket);
-            Console.WriteLine($"Removed label {labelKey} from {bucketName}.");
-        }
-        else
-        {
-            Console.WriteLine($"No such label available on {bucketName}.");
-        }
-        return bucket;
-    }
+		if (bucket.Labels != null && bucket.Labels.Keys.Contains(labelKey))
+		{
+			bucket.Labels.Remove(labelKey);
+			bucket = storage.UpdateBucket(bucket);
+			Console.WriteLine($"Removed label {labelKey} from {bucketName}.");
+		}
+		else
+		{
+			Console.WriteLine($"No such label available on {bucketName}.");
+		}
+		return bucket;
+	}
 }
 // [END storage_remove_bucket_label]

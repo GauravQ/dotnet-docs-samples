@@ -19,7 +19,14 @@ using System;
 
 public class ChangeFileStorageClass
 {
-	public Google.Apis.Storage.v1.Data.Object ChangeStorageClass(string bucketName, string objectName, string storageClass)
+	/// <summary>
+	/// Change the storage class of an object
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="objectName">Name of your object</param>
+	/// <param name="storageClass">A storage class name from StorageClasses</param>
+	/// <returns>Storage object</returns>
+	public Google.Apis.Storage.v1.Data.Object ChangeStorageClass(string bucketName = "your-bucket-name", string objectName = "your-object-name", string storageClass = "STANDARD")
 	{
 		if (string.IsNullOrEmpty(storageClass))
 			storageClass = StorageClasses.Standard;

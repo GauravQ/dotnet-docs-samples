@@ -21,20 +21,27 @@ using System.Collections.Generic;
 
 public class BucketAddLabel
 {
-    public Bucket AddLabel(string bucketName, string labelKey, string labelValue)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	/// <summary>
+	/// Add a label to a bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <param name="labelKey">Label key</param>
+	/// <param name="labelValue">Label value</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket AddLabel(string bucketName = "your-bucket-name", string labelKey = "usage", string labelValue = "chat-attachments")
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
-        if (bucket.Labels == null)
-        {
-            bucket.Labels = new Dictionary<string, string>();
-        }
-        bucket.Labels[labelKey] = labelValue;
+		if (bucket.Labels == null)
+		{
+			bucket.Labels = new Dictionary<string, string>();
+		}
+		bucket.Labels[labelKey] = labelValue;
 
-        bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Added label {labelKey} on {bucketName}.");
-        return bucket;
-    }
+		bucket = storage.UpdateBucket(bucket);
+		Console.WriteLine($"Added label {labelKey} on {bucketName}.");
+		return bucket;
+	}
 }
 // [END storage_add_bucket_label]

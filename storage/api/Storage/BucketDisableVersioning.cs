@@ -20,20 +20,25 @@ using System;
 
 public class BucketDisableVersioning
 {
-    public Bucket Disable(string bucketName)
-    {
-        var storage = StorageClient.Create();
-        var bucket = storage.GetBucket(bucketName);
+	/// <summary>
+	/// Disable versioning for this bucket
+	/// </summary>
+	/// <param name="bucketName">Name of your bucket</param>
+	/// <returns>Storage bucket</returns>
+	public Bucket Disable(string bucketName = "your-bucket-name")
+	{
+		var storage = StorageClient.Create();
+		var bucket = storage.GetBucket(bucketName);
 
-        if (bucket.Versioning == null)
-        {
-            bucket.Versioning = new Bucket.VersioningData();
-        }
-        bucket.Versioning.Enabled = false;
+		if (bucket.Versioning == null)
+		{
+			bucket.Versioning = new Bucket.VersioningData();
+		}
+		bucket.Versioning.Enabled = false;
 
-        bucket = storage.UpdateBucket(bucket);
-        Console.WriteLine($"Versioning disabled for bucket {bucketName}.");
-        return bucket;
-    }
+		bucket = storage.UpdateBucket(bucket);
+		Console.WriteLine($"Versioning disabled for bucket {bucketName}.");
+		return bucket;
+	}
 }
 // [END storage_disable_versioning]
