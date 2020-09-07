@@ -242,6 +242,291 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestBucketWebsiteConfiguration()
+        {
+            var mainPageSuffix = "index.html";
+            var notFoundPage = "404.html";
+
+            var bucketWebsite = new BucketWebsiteConfigutation();
+            var bucket = bucketWebsite.ConfigureWebsite(_bucketName, mainPageSuffix, notFoundPage);
+
+            Assert.Equal(mainPageSuffix, bucket.Website.MainPageSuffix);
+            Assert.Equal(notFoundPage, bucket.Website.NotFoundPage);
+        }
+        
+        [Fact]
+        public void TestBucketAddRemoveLabel()
+        {
+            var labelKey = "usage";
+            var labelValue = "chat-attachments";
+
+            //Add Label
+            var bucketAddLabel = new BucketAddLabel();
+            var bucket = bucketAddLabel.AddLabel(_bucketName, labelKey, labelValue);
+
+            Assert.True(bucket.Labels.Keys.Contains(labelKey));
+            Assert.Equal(labelValue, bucket.Labels[labelKey]);
+
+
+            //Remove Label
+            var bucketRemoveLabel = new BucketRemoveLabel();
+            bucket = bucketRemoveLabel.RemoveLabel(_bucketName, labelKey);
+
+            Assert.Null(bucket.Labels);
+        }
+
+        [Fact]
+        public void TestChangeDefaultStorageClass()
+        {
+            var changeClass = new ChangeDefaultStorageClass();
+            
+            //Change storage class to Coldline
+            var bucket = changeClass.ChangeStorageClass(_bucketName, StorageClasses.Coldline);
+            Assert.Equal(StorageClasses.Coldline, bucket.StorageClass);
+
+            //Change it back to standard
+            bucket = changeClass.ChangeStorageClass(_bucketName, StorageClasses.Standard);
+            Assert.Equal(StorageClasses.Standard, bucket.StorageClass);
+        }
+        
+        [Fact]
+        public void TestChangeFileStorageClass()
+        {
+            var objectName = "HelloChangeFileStorageClass.txt";
+            //Upload a file
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            var changeClass = new ChangeFileStorageClass();
+
+            //Change storage class to Coldline
+            var file = changeClass.ChangeStorageClass(_bucketName, objectName, StorageClasses.Archive);
+            Assert.Equal(StorageClasses.Coldline, file.StorageClass);
+
+            //Change it back to standard
+            file = changeClass.ChangeStorageClass(_bucketName, objectName, StorageClasses.Standard);
+            Assert.Equal(StorageClasses.Coldline, file.StorageClass);
+        }
+        
+        [Fact]
+        public void TestEnableDisableVersioning()
+        {
+            var enableVersion = new BucketEnableVersioning();
+            var disableVersion = new BucketDisableVersioning();
+
+            //Versioning is disabled by default, so Enable versioning
+            var bucket = enableVersion.Enable(_bucketName);
+            Assert.True(bucket.Versioning.Enabled);
+
+            //Then disable versioning
+            bucket = disableVersion.Disable(_bucketName);
+            Assert.False(bucket.Versioning.Enabled);
+        }
+
+        [Fact]
+        public void TestBucketAddRemoveCorsConfiguration()
+        {
+            //Add Cors Configuration
+            var addCors = new BucketAddCorsConfiguration();
+            var bucket = addCors.ConfigureCors(_bucketName);
+
+            Assert.NotNull(bucket.Cors);
+            Assert.Equal(1, bucket.Cors.Count);
+            Assert.Equal("*", bucket.Cors[0].Origin[0]);
+            Assert.Equal("PUT", bucket.Cors[0].Method[0]);
+            Assert.Equal(3600, bucket.Cors[0].MaxAgeSeconds);
+
+            //Remove Cors Configurations
+            var removeCors = new BucketRemoveCorsConfiguration();
+            bucket = removeCors.RemoveCors(_bucketName);
+
+            Assert.Null(bucket.Cors);
+        }
+        
+        [Fact]
+        public void TestDownloadPublicFile()
+        {
+            var objectName = "HelloDownloadPublicFile.txt";
+            //Upload a file
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            // Make it public
+            var madePublic = Run("make-public", _bucketName, objectName);
+            AssertSucceeded(madePublic);
+
+            var location = string.Empty;
+            try
+            {
+                //Try downloading without creds 
+                var downloadPublicFile = new DownloadPublicFile();
+                location = downloadPublicFile.Download(_bucketName, objectName);
+            }
+            finally
+            {
+                File.Delete(location ?? objectName);
+            }
+        }
+       
+        [Fact]
+        public void TestCopyArchived()
+        {
+            var objectName = "HelloCopyArchive.txt";
+            var copiedObjectName = "ByeCopy.txt";
+
+            //Enable bucket versioning
+            var bucketEnableVersioning = new BucketEnableVersioning();
+            bucketEnableVersioning.Enable(_bucketName);
+
+            //Uploaded for the first time
+            Run("upload", _bucketName, "Hello.txt", objectName);
+
+            //Get generation of first version of the file
+            var storage = StorageClient.Create();
+            var storageObject = storage.GetObject(_bucketName, objectName);
+            var fileArchivedGeneration = storageObject.Generation;
+
+            //Upload again to archive previous generation.
+            Run("upload", _bucketName, "HelloUpdated.txt", objectName);
+
+            //Get generation of second version of the file
+            storageObject = storage.GetObject(_bucketName, objectName);
+            var fileCurrentGeneration = storageObject.Generation;
+
+            try
+            {
+                //Copy first version of the file to new bucket.
+                var copyFileArchived = new CopyFileArchivedGeneration();
+                copyFileArchived.Copy(_bucketName, objectName,
+                    _bucketName1, CollectRegionalObject(copiedObjectName), fileArchivedGeneration);
+
+                //Download copied file
+                var downloaded = Run("download", _bucketName1, copiedObjectName);
+                AssertSucceeded(downloaded);
+
+                //Match file contents with first version of the file
+                Assert.Equal(File.ReadAllText(copiedObjectName),
+                    File.ReadAllText("Hello.txt"));
+            }
+            finally
+            {
+                File.Delete(copiedObjectName);
+
+                //Disable bucket versioning
+                var bucketDisableVersioning = new BucketDisableVersioning();
+                bucketDisableVersioning.Disable(_bucketName);
+
+                //For garbage collection of files with versioning enabled.
+
+                //Delete first generation of the file
+                var deleteFileArchived = new DeleteFileArchivedGeneration();
+                deleteFileArchived.Delete(_bucketName, objectName, fileArchivedGeneration);
+                //Delete second generation of the file
+                deleteFileArchived.Delete(_bucketName, objectName, fileCurrentGeneration);
+            }
+        }
+
+        [Fact]
+        public void TestListFileArchivedGeneration()
+        {
+            var objectName = "HelloListFileArchivedGeneration.txt";
+
+            //Enable bucket versioning
+            var bucketEnableVersioning = new BucketEnableVersioning();
+            bucketEnableVersioning.Enable(_bucketName);
+
+            //Uploaded for the first time
+            Run("upload", _bucketName, "Hello.txt", objectName);
+
+            //Upload again to archive previous generation.
+            Run("upload", _bucketName, "HelloUpdated.txt", objectName);
+
+            var fileArchivedGeneration = (long?) 0;
+            var fileCurrentGeneration = (long?) 0;
+
+            try
+            {
+                var listFileArchived = new ListFileArchivedGeneration();
+                var objects = listFileArchived.ListAllFiles(_bucketName);
+
+                Assert.Equal(2, objects.Count(a => a.Name == objectName));
+
+                //For garbage collection later
+                var testFiles = objects.Where(a => a.Name == objectName).ToList();
+                fileArchivedGeneration = testFiles[0].Generation;
+                fileCurrentGeneration = testFiles[1].Generation;
+            }
+            finally
+            {
+                //Disable bucket versioning
+                var bucketDisableVersioning = new BucketDisableVersioning();
+                bucketDisableVersioning.Disable(_bucketName);
+
+                //For garbage collection of files with versioning enabled.
+
+                //Delete first generation of the file
+                var deleteFileArchived = new DeleteFileArchivedGeneration();
+                deleteFileArchived.Delete(_bucketName, objectName, fileArchivedGeneration);
+                //Delete second generation of the file
+                deleteFileArchived.Delete(_bucketName, objectName, fileCurrentGeneration);
+            }
+        }
+
+        [Fact]
+        public void TestDeleteFileArchivedGeneration()
+        {
+            var objectName = "HelloDeleteFileArchivedGeneration.txt";
+
+            //Enable bucket versioning
+            var bucketEnableVersioning = new BucketEnableVersioning();
+            bucketEnableVersioning.Enable(_bucketName);
+
+            //Uploaded for the first time
+            Run("upload", _bucketName, "Hello.txt", objectName);
+
+            //Get generation of first version of the file
+            var storage = StorageClient.Create();
+            var storageObject = storage.GetObject(_bucketName, objectName);
+            var fileArchivedGeneration = storageObject.Generation;
+
+            //Upload again to archive previous generation.
+            Run("upload", _bucketName, "HelloUpdated.txt", objectName);
+
+            //Get generation of second version of the file
+            storageObject = storage.GetObject(_bucketName, objectName);
+            var fileCurrentGeneration = storageObject.Generation;
+
+            //Delete first generation of the file
+            var deleteFileArchived = new DeleteFileArchivedGeneration();
+            deleteFileArchived.Delete(_bucketName, objectName, fileArchivedGeneration);
+
+            //First generation of file should not exist And GetObject should throw error
+            var getObjectOptions = new GetObjectOptions
+            {
+                Generation = fileArchivedGeneration
+            };
+            Assert.Throws<Google.GoogleApiException>(() => storage.GetObject(_bucketName, objectName, getObjectOptions));
+
+            //Second generation of file should still exist
+            getObjectOptions.Generation = fileCurrentGeneration;
+            var findCurrentGeneration = storage.GetObject(_bucketName, objectName, getObjectOptions);
+            Assert.NotNull(findCurrentGeneration);
+
+            //Disable bucket versioning
+            var bucketDisableVersioning = new BucketDisableVersioning();
+            bucketDisableVersioning.Disable(_bucketName);
+
+            //For garbage collection of files with versioning enabled.
+
+            //Delete second generation of the file
+            deleteFileArchived.Delete(_bucketName, objectName, fileCurrentGeneration);
+
+            //Second generation of file should not exist And GetObject should throw error
+            getObjectOptions.Generation = fileCurrentGeneration;
+            Assert.Throws<Google.GoogleApiException>(() => storage.GetObject(_bucketName, objectName, getObjectOptions));
+        }
+
+        [Fact]
         public void TestListObjectsInBucket()
         {
             // Try listing the files.  There should be none.
