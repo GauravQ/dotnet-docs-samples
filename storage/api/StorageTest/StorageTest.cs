@@ -381,6 +381,174 @@ namespace GoogleCloudSamples
         }
 
         [Fact]
+        public void TestSetObjectMetadata()
+        {
+            var key = "file-type";
+            var value = "profile-image";
+            var objectName = "HelloSetObjectMetadata.txt";
+
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            var setObjectMetadata = new SetObjectMetadata();
+            var file = setObjectMetadata.Set(_bucketName, objectName, key, value);
+
+            Assert.NotNull(file.Metadata);
+            Assert.True(file.Metadata.Keys.Contains(key));
+            Assert.Equal(value, file.Metadata[key]);
+        }
+
+        [Fact]
+        public void TestGetStorageServiceAccount()
+        {
+            var getServiceAccount = new GetStorageServiceAccount();
+
+            var serviceAccountEmail = getServiceAccount.GetAccountEmail(Storage.s_projectId);
+
+            Assert.NotNull(serviceAccountEmail);
+        }
+
+        [Fact]
+        public void TestBucketSetPublicIam()
+        {
+            var objectName = "HelloBucketSetPublicIam.txt";
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName));
+            AssertSucceeded(uploaded);
+
+            var setPublicIam = new BucketSetPublicIam();
+            setPublicIam.SetPublicAccess(_bucketName);
+
+            var storage = StorageClient.CreateUnauthenticated();
+            var file = storage.GetObject(_bucketName, objectName);
+
+            Assert.NotNull(file);
+        }
+
+        [Fact]
+        public void TestObjectGetKMSKey()
+        {
+            var objectName = "HelloObjectGetKMSKey.txt";
+
+            var uploadWithKmsKeyResponse = Run("upload-with-kms-key",
+                    _bucketName1, s_kmsKeyLocation, _kmsKeyRing,
+                    _kmsKeyName, "Hello.txt", CollectRegionalObject(objectName));
+            AssertSucceeded(uploadWithKmsKeyResponse);
+
+            var objectGetKMSKey = new ObjectGetKMSKey();
+            var kMSKeyName = objectGetKMSKey.GetKeyName(_bucketName, objectName);
+
+            Assert.Equal(_kmsKeyName, kMSKeyName);
+        }
+
+        [Fact]
+        public void TestObjectCsekToCmek()
+        {
+            //Upload with csek
+            var objectName = "HelloObjectCsekToCmek.txt";
+            var output = Run("generate-encryption-key");
+            AssertSucceeded(output);
+            string key = output.Stdout.Trim();
+            output = Run("upload", "-key", key, _bucketName,
+                "Hello.txt", Collect(objectName));
+            AssertSucceeded(output);
+
+            //Change key type to cmek
+            var objectCsekToCmek = new ObjectCsekToCmek();
+            objectCsekToCmek.ChangeCsekToCmek(Storage.s_projectId, _bucketName, objectName,
+                key, s_kmsKeyLocation, _kmsKeyRing, _kmsKeyName);
+
+            //Verify keyname
+            var got = Run("get-metadata", _bucketName, objectName);
+            AssertSucceeded(got);
+            Assert.Contains(_kmsKeyName, got.Stdout);
+        }
+
+        [Fact]
+        public void TestBucketDeleteDefaultKmsKey()
+        {
+            //Set default key
+            var addBucketDefaultKmsKeyResponse =
+                Run("add-bucket-default-kms-key", _bucketName1,
+                    s_kmsKeyLocation, _kmsKeyRing, _kmsKeyName);
+            AssertSucceeded(addBucketDefaultKmsKeyResponse);
+
+            //Verify default key
+            var bucketMetadata = Run("get-bucket-metadata", _bucketName1);
+            Assert.Contains(_kmsKeyName, bucketMetadata.Stdout);
+
+            //Remove default key
+            var deleteDefaultKmsKey = new BucketDeleteDefaultKmsKey();
+            deleteDefaultKmsKey.RemoveKMSKey(_bucketName);
+
+            //Verify removal
+            bucketMetadata = Run("get-bucket-metadata", _bucketName1);
+            Assert.DoesNotContain(_kmsKeyName, bucketMetadata.Stdout);
+        }
+
+        [Fact]
+        public void TestObjectRotateEncryptionKey()
+        {
+            var objectName = "HelloObjectRotateEncryptionKey.txt";
+
+            var output = Run("generate-encryption-key");
+            AssertSucceeded(output);
+            string currentKey = output.Stdout.Trim();
+
+            output = Run("generate-encryption-key");
+            AssertSucceeded(output);
+            string newKey = output.Stdout.Trim();
+
+            output = Run("upload", "-key", currentKey, _bucketName,
+                "Hello.txt", Collect(objectName));
+            AssertSucceeded(output);
+
+            var rotateEncryptionKey = new ObjectRotateEncryptionKey();
+            rotateEncryptionKey.ChangeEncryKey(_bucketName, objectName, currentKey, newKey);
+
+            // Downloading with the old key should fail.
+            output = Run("download", "-key", currentKey, _bucketName, objectName);
+            Assert.NotEqual(0, output.ExitCode);
+
+            // Downloading with the new key should yield the original file.
+            output = Run("download", "-key", newKey, _bucketName, objectName);
+            AssertSucceeded(output);
+
+            Assert.Equal(File.ReadAllText("Hello.txt"),
+                File.ReadAllText(objectName));
+
+            File.Delete(objectName);
+        }
+
+        [Fact]
+        public void TestComposeObject()
+        {
+            var objectName1 = "HelloComposeObject.txt";
+            var objectName2 = "HelloComposeObjectAdditional.txt";
+            var objectName3 = "HelloComposedDownload.txt";
+
+            var uploaded = Run("upload", _bucketName, "Hello.txt", Collect(objectName1));
+            AssertSucceeded(uploaded);
+
+            uploaded = Run("upload", _bucketName, "HelloAdditional.txt", Collect(objectName2));
+            AssertSucceeded(uploaded);
+
+            var composeObject = new ComposeObject();
+            composeObject.ComposeFile(_bucketName, Collect(objectName3), new string[] { objectName1, objectName2 });
+
+            //Download the composed file
+            var output = Run("download", _bucketName, objectName3);
+            AssertSucceeded(output);
+
+            //Content from both file should exists in the downloaded file
+            Assert.Contains(File.ReadAllText("Hello.txt"),
+                File.ReadAllText(objectName3));
+            Assert.Contains(File.ReadAllText("HelloAdditional.txt"),
+                File.ReadAllText(objectName3));
+
+            File.Delete(objectName3);
+        }
+
+        [Fact]
         public void TestGetMetadata()
         {
             var uploaded = Run("upload", _bucketName, "Hello.txt", Collect("HelloGetMetadata.txt"));
