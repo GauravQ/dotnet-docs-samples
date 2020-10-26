@@ -27,19 +27,18 @@ public class BucketRemoveLabelTest
     [Fact]
     public void BucketRemoveLabel()
     {
-        BucketAddLabel bucketAddLabel = new BucketAddLabel();
-        BucketRemoveLabel bucketRemoveLabel = new BucketRemoveLabel();
+        BucketAddLabelSample bucketAddLabelSample = new BucketAddLabelSample();
+        BucketRemoveLabelSample bucketRemoveLabelSample = new BucketRemoveLabelSample();
 
         var labelKey = "usage";
         var labelValue = "chat-attachments";
 
-        //Add Label
-        var bucket = bucketAddLabel.AddLabel(_bucketFixture.BucketNameGeneric, labelKey, labelValue);
-        Assert.True(bucket.Labels.Keys.Contains(labelKey));
-        Assert.Equal(labelValue, bucket.Labels[labelKey]);
+        // Add Label
+        var bucket = bucketAddLabelSample.BucketAddLabel(_bucketFixture.BucketNameGeneric, labelKey, labelValue);
+        Assert.Contains(bucket.Labels, l => l.Key == labelKey && l.Value == labelValue);
 
-        //Remove Label
-        bucket = bucketRemoveLabel.RemoveLabel(_bucketFixture.BucketNameGeneric, labelKey);
+        // Remove Label
+        bucket = bucketRemoveLabelSample.BucketRemoveLabel(_bucketFixture.BucketNameGeneric, labelKey);
         Assert.Null(bucket.Labels);
     }
 }

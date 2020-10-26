@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Net;
 using Xunit;
 
 [Collection(nameof(BucketFixture))]
@@ -29,8 +27,8 @@ public class GetStorageServiceAccountTest
     [Fact]
     public void GetStorageServiceAccount()
     {
-        GetStorageServiceAccount getServiceAccount = new GetStorageServiceAccount();
-        var serviceAccountEmail = getServiceAccount.GetAccountEmail(_bucketFixture.ProjectId);
+        GetStorageServiceAccountSample getStorageServiceAccountSample = new GetStorageServiceAccountSample();
+        var serviceAccountEmail = getStorageServiceAccountSample.GetStorageServiceAccount(_bucketFixture.ProjectId);
         Assert.NotNull(serviceAccountEmail);
     }
 }

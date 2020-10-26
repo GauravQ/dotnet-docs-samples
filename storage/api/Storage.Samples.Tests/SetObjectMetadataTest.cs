@@ -29,7 +29,7 @@ public class SetObjectMetadataTest
     {
         GetMetadataSample getMetadataSample = new GetMetadataSample();
         UploadFileSample uploadFileSample = new UploadFileSample();
-        SetObjectMetadata setObjectMetadata = new SetObjectMetadata();
+        SetObjectMetadataSample setObjectMetadataSample = new SetObjectMetadataSample();
 
         var key = "file-type";
         var value = "profile-image";
@@ -37,12 +37,9 @@ public class SetObjectMetadataTest
 
         uploadFileSample.UploadFile(_bucketFixture.BucketNameGeneric, _bucketFixture.FilePath, _bucketFixture.Collect(objectName));
 
-        setObjectMetadata.Set(_bucketFixture.BucketNameGeneric, objectName, key, value);
+        setObjectMetadataSample.SetObjectMetadata(_bucketFixture.BucketNameGeneric, objectName, key, value);
 
         var file = getMetadataSample.GetMetadata(_bucketFixture.BucketNameGeneric, objectName);
-        Assert.NotNull(file);
-        Assert.NotNull(file.Metadata);
-        Assert.True(file.Metadata.Keys.Contains(key));
-        Assert.Equal(value, file.Metadata[key]);
+        Assert.Contains(file.Metadata, m => m.Key == key && m.Value == value);
     }
 }

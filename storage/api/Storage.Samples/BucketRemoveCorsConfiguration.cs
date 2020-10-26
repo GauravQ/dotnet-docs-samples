@@ -18,21 +18,25 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
-public class BucketRemoveCorsConfiguration
+public class BucketRemoveCorsConfigurationSample
 {
-	public Bucket RemoveCors(string bucketName = "your-bucket-name")
+	public Bucket BucketRemoveCorsConfiguration(string bucketName = "your-bucket-name")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);
 
-		if (bucket.Cors != null)
-		{
-			bucket.Cors = null;
-			bucket = storage.UpdateBucket(bucket);
-			Console.WriteLine($"All Cors removed from bucket {bucketName}.");
-		}
+        if (bucket.Cors == null)
+        {
+            Console.WriteLine("No Cors to remove");
+        }
+        else
+        {
+            bucket.Cors = null;
+            bucket = storage.UpdateBucket(bucket);
+            Console.WriteLine($"All Cors removed from bucket {bucketName}.");
+        }
 
-		return bucket;
+        return bucket;
 	}
 }
 // [END storage_remove_cors_configuration]

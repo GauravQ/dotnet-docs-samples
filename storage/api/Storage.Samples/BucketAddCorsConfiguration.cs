@@ -18,15 +18,16 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 using System.Collections.Generic;
+using static Google.Apis.Storage.v1.Data.Bucket;
 
-public class BucketAddCorsConfiguration
+public class BucketAddCorsConfigurationSample
 {
-	public Bucket ConfigureCors(string bucketName = "your-bucket-name")
+	public Bucket BucketAddCorsConfiguration(string bucketName = "your-bucket-name")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);
 
-		Bucket.CorsData corsData = new Bucket.CorsData
+		CorsData corsData = new CorsData
 		{
 			Origin = new string[] { "*" },
 			ResponseHeader = new string[] { "Content-Type", "x-goog-resumable" },
@@ -36,7 +37,7 @@ public class BucketAddCorsConfiguration
 
 		if (bucket.Cors == null)
 		{
-			bucket.Cors = new List<Bucket.CorsData>();
+			bucket.Cors = new List<CorsData>();
 		}
 		bucket.Cors.Add(corsData);
 

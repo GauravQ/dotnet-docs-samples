@@ -18,31 +18,36 @@ using Google.Cloud.Storage.V1;
 using System;
 using System.IO;
 
-public class ObjectCsekToCmek
-{
-	public void ChangeCsekToCmek(string projectId = "your-project-id", string bucketName = "your-bucket-name", string objectName = "your-object-name", string currrentEncryKey = "TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=", string keyLocation = "us-west1", string kmsKeyRing = "kms-key-ring", string kmsKeyName = "key-name")
+public class ObjectCsekToCmekSample
+{ 
+	public void ObjectCsekToCmek(
+		string projectId = "your-project-id", 
+		string bucketName = "your-unique-bucket-name", 
+		string objectName = "your-object-name", 
+		string currrentEncryKey = "TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=", 
+		string keyLocation = "us-west1", 
+		string kmsKeyRing = "kms-key-ring", 
+		string kmsKeyName = "key-name")
 	{
 		string keyPrefix = $"projects/{projectId}/locations/{keyLocation}";
 		string fullKeyringName = $"{keyPrefix}/keyRings/{kmsKeyRing}";
 		string fullKeyName = $"{fullKeyringName}/cryptoKeys/{kmsKeyName}";
 		var storage = StorageClient.Create();
 
-		using (var outputStream = new MemoryStream())
-		{
-			storage.DownloadObject(bucketName, objectName, outputStream,
-				new DownloadObjectOptions()
-				{
-					EncryptionKey = EncryptionKey.Create(
-						Convert.FromBase64String(currrentEncryKey))
-				});
-
-			outputStream.Position = 0;
-
-			storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
+		using var outputStream = new MemoryStream();		
+		storage.DownloadObject(bucketName, objectName, outputStream,
+			new DownloadObjectOptions()
 			{
-				KmsKeyName = fullKeyName
+				EncryptionKey = EncryptionKey.Create(
+					Convert.FromBase64String(currrentEncryKey))
 			});
-		}
+
+		outputStream.Position = 0;
+
+		storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
+		{
+			KmsKeyName = fullKeyName
+		});		
 
 		Console.WriteLine($"Encryption key changed from CSEK to CMEK for object {objectName} in bucket {bucketName}");
 	}

@@ -17,9 +17,9 @@
 using Google.Cloud.Storage.V1;
 using System;
 
-public class GetStorageServiceAccount
+public class GetStorageServiceAccountSample
 {
-	public string GetAccountEmail(string projectId = "your-project-id")
+	public string GetStorageServiceAccount(string projectId = "your-project-id")
 	{
 		var storage = StorageClient.Create();
 

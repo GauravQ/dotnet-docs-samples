@@ -15,24 +15,24 @@
 using Xunit;
 
 [Collection(nameof(BucketFixture))]
-public class BucketWebsiteConfigutationTest
+public class BucketWebsiteConfigurationTest
 {
     private readonly BucketFixture _bucketFixture;
 
-    public BucketWebsiteConfigutationTest(BucketFixture bucketFixture)
+    public BucketWebsiteConfigurationTest(BucketFixture bucketFixture)
     {
         _bucketFixture = bucketFixture;
     }
 
     [Fact]
-    public void BucketWebsiteConfigutation()
+    public void BucketWebsiteConfiguration()
     {
-        BucketWebsiteConfigutation bucketWebsite = new BucketWebsiteConfigutation();
+        BucketWebsiteConfigurationSample bucketWebsiteConfigurationSample = new BucketWebsiteConfigurationSample();
 
         var mainPageSuffix = "index.html";
         var notFoundPage = "404.html";
 
-        var bucket = bucketWebsite.ConfigureWebsite(_bucketFixture.BucketNameGeneric, mainPageSuffix, notFoundPage);
+        var bucket = bucketWebsiteConfigurationSample.BucketWebsiteConfiguration(_bucketFixture.BucketNameGeneric, mainPageSuffix, notFoundPage);
 
         Assert.Equal(mainPageSuffix, bucket.Website.MainPageSuffix);
         Assert.Equal(notFoundPage, bucket.Website.NotFoundPage);

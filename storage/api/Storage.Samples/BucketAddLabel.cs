@@ -19,9 +19,12 @@ using Google.Cloud.Storage.V1;
 using System;
 using System.Collections.Generic;
 
-public class BucketAddLabel
+public class BucketAddLabelSample
 {
-	public Bucket AddLabel(string bucketName = "your-bucket-name", string labelKey = "usage", string labelValue = "chat-attachments")
+	public Bucket BucketAddLabel(
+		string bucketName = "your-bucket-name", 
+		string labelKey = "usage", 
+		string labelValue = "chat-attachments")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);
@@ -30,7 +33,7 @@ public class BucketAddLabel
 		{
 			bucket.Labels = new Dictionary<string, string>();
 		}
-		bucket.Labels[labelKey] = labelValue;
+		bucket.Labels.Add(labelKey, labelValue);
 
 		bucket = storage.UpdateBucket(bucket);
 		Console.WriteLine($"Added label {labelKey} on {bucketName}.");

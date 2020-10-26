@@ -18,17 +18,17 @@ using Google.Cloud.Storage.V1;
 using System;
 using System.IO;
 
-public class DownloadPublicFile
+public class DownloadPublicFileSample
 {
-	public string Download(string bucketName = "your-bucket-name", string objectName = "your-object-name", string localPath = null)
+	public string DownloadPublicFile(
+		string bucketName = "your-bucket-name", 
+		string objectName = "your-object-name", 
+		string localPath = "my-local-path/my-file-name")
 	{
 		var storage = StorageClient.CreateUnauthenticated();
 
-		localPath = localPath ?? Path.GetFileName(objectName);
-		using (var outputFile = File.OpenWrite(localPath))
-		{
-			storage.DownloadObject(bucketName, objectName, outputFile);
-		}
+		using var outputFile = File.OpenWrite(localPath);
+		storage.DownloadObject(bucketName, objectName, outputFile);
 
 		Console.WriteLine($"downloaded public file {objectName} to {localPath}.");
 		return localPath;

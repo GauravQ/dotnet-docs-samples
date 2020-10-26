@@ -18,9 +18,12 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
-public class BucketWebsiteConfigutation
+public class BucketWebsiteConfigurationSample
 {
-	public Bucket ConfigureWebsite(string bucketName = "your-bucket-name", string mainPageSuffix = "index.html", string notFoundPage = "404.html")
+	public Bucket BucketWebsiteConfiguration(
+		string bucketName = "your-bucket-name", 
+		string mainPageSuffix = "index.html", 
+		string notFoundPage = "404.html")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);

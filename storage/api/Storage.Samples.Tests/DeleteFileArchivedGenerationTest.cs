@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
 using System.Linq;
 using Xunit;
 
@@ -31,22 +30,22 @@ public class DeleteFileArchivedGenerationTest
     {
         UploadFileSample uploadFileSample = new UploadFileSample();
         ListFilesSample listFilesSample = new ListFilesSample();
-        BucketEnableVersioning bucketEnableVersioning = new BucketEnableVersioning();
+        BucketEnableVersioningSample bucketEnableVersioningSample = new BucketEnableVersioningSample();
         GetMetadataSample getMetadataSample = new GetMetadataSample();
         DownloadFileSample downloadFileSample = new DownloadFileSample();
-        ListFileArchivedGeneration listFileArchived = new ListFileArchivedGeneration();
-        DeleteFileArchivedGeneration deleteFileArchived = new DeleteFileArchivedGeneration();
-        BucketDisableVersioning bucketDisableVersioning = new BucketDisableVersioning();
+        ListFileArchivedGenerationSample listFileArchivedGenerationSample = new ListFileArchivedGenerationSample();
+        DeleteFileArchivedGenerationSample deleteFileArchivedGenerationSample = new DeleteFileArchivedGenerationSample();
+        BucketDisableVersioningSample bucketDisableVersioningSample = new BucketDisableVersioningSample();
 
         var objectName = "HelloDeleteFileArchivedGeneration.txt";
 
-        //Enable bucket versioning
-        bucketEnableVersioning.Enable(_bucketFixture.BucketNameGeneric);
+        // Enable bucket versioning
+        bucketEnableVersioningSample.BucketEnableVersioning(_bucketFixture.BucketNameGeneric);
 
-        //Uploaded for the first time
+        // Uploaded for the first time
         uploadFileSample.UploadFile(_bucketFixture.BucketNameGeneric, _bucketFixture.FilePath, objectName);
 
-        //Upload again to archive previous generation.
+        // Upload again to archive previous generation.
         uploadFileSample.UploadFile(_bucketFixture.BucketNameGeneric, "Resources/HelloDownloadCompleteByteRange.txt", objectName);
 
         var fileArchivedGeneration = (long?)0;
@@ -54,31 +53,31 @@ public class DeleteFileArchivedGenerationTest
 
         try
         {
-            var objects = listFileArchived.ListAllFiles(_bucketFixture.BucketNameGeneric);
+            var objects = listFileArchivedGenerationSample.ListFileArchivedGeneration(_bucketFixture.BucketNameGeneric);
 
             Assert.Equal(2, objects.Count(a => a.Name == objectName));
 
-            //Get Generations
+            // Get Generations
             var testFiles = objects.Where(a => a.Name == objectName).ToList();
             fileArchivedGeneration = testFiles[0].Generation;
             fileCurrentGeneration = testFiles[1].Generation;
 
-            //Delete first generation of the file
-            deleteFileArchived.Delete(_bucketFixture.BucketNameGeneric, objectName, fileArchivedGeneration);
+            // Delete first generation of the file
+            deleteFileArchivedGenerationSample.DeleteFileArchivedGeneration(_bucketFixture.BucketNameGeneric, objectName, fileArchivedGeneration);
 
-            objects = listFileArchived.ListAllFiles(_bucketFixture.BucketNameGeneric);
+            objects = listFileArchivedGenerationSample.ListFileArchivedGeneration(_bucketFixture.BucketNameGeneric);
             Assert.Equal(1, objects.Count(a => a.Name == objectName));
 
-            //Delete second generation of the file
-            deleteFileArchived.Delete(_bucketFixture.BucketNameGeneric, objectName, fileCurrentGeneration);
+            // Delete second generation of the file
+            deleteFileArchivedGenerationSample.DeleteFileArchivedGeneration(_bucketFixture.BucketNameGeneric, objectName, fileCurrentGeneration);
 
-            objects = listFileArchived.ListAllFiles(_bucketFixture.BucketNameGeneric);
+            objects = listFileArchivedGenerationSample.ListFileArchivedGeneration(_bucketFixture.BucketNameGeneric);
             Assert.Equal(0, objects.Count(a => a.Name == objectName));
         }
         finally
         {
-            //Disable bucket versioning
-            bucketDisableVersioning.Disable(_bucketFixture.BucketNameGeneric);
+            // Disable bucket versioning
+            bucketDisableVersioningSample.BucketDisableVersioning(_bucketFixture.BucketNameGeneric);
         }
     }
 }

@@ -18,14 +18,14 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
-public class BucketRemoveLabel
+public class BucketRemoveLabelSample
 {
-	public Bucket RemoveLabel(string bucketName = "your-bucket-name", string labelKey = "usage")
+	public Bucket BucketRemoveLabel(string bucketName = "your-bucket-name", string labelKey = "usage")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);
 
-		if (bucket.Labels != null && bucket.Labels.Keys.Contains(labelKey))
+		if (bucket.Labels !=null && bucket.Labels.Keys.Contains(labelKey))
 		{
 			bucket.Labels.Remove(labelKey);
 			bucket = storage.UpdateBucket(bucket);

@@ -18,30 +18,32 @@ using Google.Cloud.Storage.V1;
 using System;
 using System.IO;
 
-public class ObjectRotateEncryptionKey
+public class ObjectRotateEncryptionKeySample
 {
-	public void ChangeEncryKey(string bucketName = "your-bucket-name", string objectName = "your-object-name", string currrentEncryKey = "TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=", string newEncrykey = "ARbt/judaq+VmtXzAsc83J4z5kFmWJ6NdAPQuleuB7g=")
+	public void ObjectRotateEncryptionKey(
+		string bucketName = "your-unique-bucket-name",
+		string objectName = "your-object-name", 
+		string currrentEncryKey = "TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=", 
+		string newEncrykey = "ARbt/judaq+VmtXzAsc83J4z5kFmWJ6NdAPQuleuB7g=")
 	{
 		var storage = StorageClient.Create();
 
-		using (var outputStream = new MemoryStream())
-		{
-			storage.DownloadObject(bucketName, objectName, outputStream,
-				new DownloadObjectOptions()
-				{
-					EncryptionKey = EncryptionKey.Create(
-						Convert.FromBase64String(currrentEncryKey))
-				});
-
-			outputStream.Position = 0;
-
-			storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
+		using var outputStream = new MemoryStream();		
+		storage.DownloadObject(bucketName, objectName, outputStream,
+			new DownloadObjectOptions()
 			{
 				EncryptionKey = EncryptionKey.Create(
-						Convert.FromBase64String(newEncrykey))
+					Convert.FromBase64String(currrentEncryKey))
 			});
-		}
 
+		outputStream.Position = 0;
+
+		storage.UploadObject(bucketName, objectName, null, outputStream, new UploadObjectOptions()
+		{
+			EncryptionKey = EncryptionKey.Create(
+					Convert.FromBase64String(newEncrykey))
+		});
+		
 		Console.WriteLine($"Encryption key changed from {currrentEncryKey} to {newEncrykey} for object {objectName} in bucket {bucketName}");
 	}
 }

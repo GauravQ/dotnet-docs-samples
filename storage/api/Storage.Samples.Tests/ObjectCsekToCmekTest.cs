@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Net;
 using Xunit;
 
 [Collection(nameof(BucketFixture))]
@@ -29,23 +27,23 @@ public class ObjectCsekToCmekTest
     [Fact]
     public void ObjectCsekToCmek()
     {
-        GenerateEncryptionKeySample generateEncryptionKey = new GenerateEncryptionKeySample();
+        GenerateEncryptionKeySample generateEncryptionKeySample = new GenerateEncryptionKeySample();
         UploadEncryptedFileSample uploadEncryptedFileSample = new UploadEncryptedFileSample();
         GetMetadataSample getMetadataSample = new GetMetadataSample();
-        ObjectCsekToCmek objectCsekToCmek = new ObjectCsekToCmek();
+        ObjectCsekToCmekSample objectCsekToCmekSample = new ObjectCsekToCmekSample();
 
-        //Upload with csek
+        // Upload with csek
         var objectName = "HelloObjectCsekToCmek.txt";
-        string key = generateEncryptionKey.GenerateEncryptionKey();
+        string key = generateEncryptionKeySample.GenerateEncryptionKey();
 
         uploadEncryptedFileSample.UploadEncryptedFile(key, _bucketFixture.BucketNameGeneric, _bucketFixture.FilePath, _bucketFixture.Collect(objectName));
 
-        //Change key type to cmek
-        objectCsekToCmek.ChangeCsekToCmek(_bucketFixture.ProjectId, _bucketFixture.BucketNameGeneric, objectName,
+        // Change key type to cmek
+        objectCsekToCmekSample.ObjectCsekToCmek(_bucketFixture.ProjectId, _bucketFixture.BucketNameGeneric, objectName,
             key, _bucketFixture.KmsKeyLocation, _bucketFixture.KmsKeyRing, _bucketFixture.KmsKeyName);
 
-        //Verify keyname
-        var got = getMetadataSample.GetMetadata(_bucketFixture.BucketNameGeneric, objectName);
-        Assert.Equal(_bucketFixture.KmsKeyName, got.KmsKeyName);
+        // Verify keyname
+        var obj = getMetadataSample.GetMetadata(_bucketFixture.BucketNameGeneric, objectName);
+        Assert.Equal(_bucketFixture.KmsKeyName, obj.KmsKeyName);
     }
 }

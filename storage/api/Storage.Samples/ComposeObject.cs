@@ -20,9 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class ComposeObject
+public class ComposeObjectSample
 {
-	public void ComposeFile(string bucketName, string objectName, string[] files)
+	public void ComposeObject(string bucketName, string objectName, string[] files)
 	{
 		var storage = StorageClient.Create();
 

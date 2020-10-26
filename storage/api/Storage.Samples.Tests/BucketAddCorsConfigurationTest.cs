@@ -27,20 +27,19 @@ public class BucketAddCorsConfigurationTest
     [Fact]
     public void BucketAddCorsConfiguration()
     {
-        BucketAddCorsConfiguration addCors = new BucketAddCorsConfiguration();
-        BucketRemoveCorsConfiguration removeCors = new BucketRemoveCorsConfiguration();
+        BucketAddCorsConfigurationSample bucketAddCorsConfigurationSample = new BucketAddCorsConfigurationSample();
+        BucketRemoveCorsConfigurationSample bucketRemoveCorsConfigurationSample= new BucketRemoveCorsConfigurationSample();
 
-        //Add Cors Configuration
-        var bucket = addCors.ConfigureCors(_bucketFixture.BucketNameGeneric);
+        // Add Cors Configuration
+        var bucket = bucketAddCorsConfigurationSample.BucketAddCorsConfiguration(_bucketFixture.BucketNameGeneric);
 
-        Assert.NotNull(bucket.Cors);
-        Assert.Equal(1, bucket.Cors.Count);
+        Assert.True(bucket.Cors.Count > 0);
         Assert.Equal("*", bucket.Cors[0].Origin[0]);
         Assert.Equal("PUT", bucket.Cors[0].Method[0]);
         Assert.Equal(3600, bucket.Cors[0].MaxAgeSeconds);
 
-        //Remove Cors Configurations
-        bucket = removeCors.RemoveCors(_bucketFixture.BucketNameGeneric);
-        Assert.Null(bucket.Cors);
+        // Remove Cors Configurations
+        bucketRemoveCorsConfigurationSample.BucketRemoveCorsConfiguration(_bucketFixture.BucketNameGeneric);
+        _bucketFixture.SleepAfterBucketCreateUpdateDelete();
     }
 }

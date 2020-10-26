@@ -18,12 +18,14 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
-public class ChangeDefaultStorageClass
+public class ChangeDefaultStorageClassSample
 {
-	public Bucket ChangeStorageClass(string bucketName = "your-bucket-name", string storageClass = "STANDARD")
+	public Bucket ChangeDefaultStorageClass(string bucketName = "your-bucket-name", string storageClass = "STANDARD")
 	{
 		if (string.IsNullOrEmpty(storageClass))
+		{
 			storageClass = StorageClasses.Standard;
+		}
 
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);

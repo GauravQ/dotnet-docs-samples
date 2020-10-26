@@ -18,21 +18,25 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
-public class BucketDeleteDefaultKmsKey
+public class BucketDeleteDefaultKmsKeySample
 {
-	public Bucket RemoveKMSKey(string bucketName = "your-bucket-name")
+	public Bucket BucketDeleteDefaultKmsKey(string bucketName = "your-bucket-name")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);
 
-		if (bucket.Encryption != null)
-		{
-			bucket.Encryption.DefaultKmsKeyName = string.Empty;
-			bucket = storage.UpdateBucket(bucket);
-			Console.WriteLine($"Removed default kms key from bucket {bucketName}");
-		}
+        if (bucket.Encryption == null)
+        {
+            Console.WriteLine("No default kms key to remove");
+        }
+        else
+        {
+            bucket.Encryption.DefaultKmsKeyName = string.Empty;
+            bucket = storage.UpdateBucket(bucket);
+            Console.WriteLine($"Removed default kms key from bucket {bucketName}");
+        }
 
-		return bucket;
+        return bucket;
 	}
 }
 // [END storage_bucket_delete_default_kms_key]

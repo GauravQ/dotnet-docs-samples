@@ -32,27 +32,18 @@ public class DownloadPublicFileTest
         //Make Pulic
         MakePublicSample makePublicSample = new MakePublicSample();
         UploadFileSample uploadFileSample = new UploadFileSample();
-        GetMetadataSample getMetadataSample = new GetMetadataSample();
-        DownloadPublicFile downloadPublicFile = new DownloadPublicFile();
+        DownloadPublicFileSample downloadPublicFileSample = new DownloadPublicFileSample();
+        WebClient webClient = new WebClient();
 
         uploadFileSample.UploadFile(_bucketFixture.BucketNameGeneric, _bucketFixture.FilePath, _bucketFixture.Collect("HelloDownloadPublic.txt"));
 
-        var metadata = getMetadataSample.GetMetadata(_bucketFixture.BucketNameGeneric, "HelloDownloadPublic.txt");
-        Assert.NotNull(metadata.MediaLink);
+        // Make it public
+        makePublicSample.MakePublic(_bucketFixture.BucketNameGeneric, "HelloDownloadPublic.txt");
 
-        // Before making the file public, fetching the medialink should throw an exception.
-        WebClient webClient = new WebClient();
-        Assert.Throws<WebException>(() => webClient.DownloadString(metadata.MediaLink));
-
-        // Make it public and try fetching again.
-        var medialink = makePublicSample.MakePublic(_bucketFixture.BucketNameGeneric, "HelloDownloadPublic.txt");
-        var text = webClient.DownloadString(medialink);
-        Assert.Equal(File.ReadAllText(_bucketFixture.FilePath), text);
-
-        //Try downloading without creds 
+        // Try downloading without creds 
         try
         {
-            downloadPublicFile.Download(_bucketFixture.BucketNameGeneric, "HelloDownloadPublic.txt", "HelloDownloadPublic.txt");
+            downloadPublicFileSample.DownloadPublicFile(_bucketFixture.BucketNameGeneric, "HelloDownloadPublic.txt", "HelloDownloadPublic.txt");
             Assert.Equal(File.ReadAllText(_bucketFixture.FilePath), File.ReadAllText("HelloDownloadPublic.txt"));
         }
         finally

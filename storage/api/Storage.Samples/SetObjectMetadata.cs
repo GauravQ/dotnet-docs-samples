@@ -18,9 +18,9 @@ using Google.Cloud.Storage.V1;
 using System;
 using System.Collections.Generic;
 
-public class SetObjectMetadata
+public class SetObjectMetadataSample
 {
-	public Google.Apis.Storage.v1.Data.Object Set(string bucketName = "your-bucket-name", string objectName = "your-object-name", string key = "file-type", string value = "profile-image")
+	public Google.Apis.Storage.v1.Data.Object SetObjectMetadata(string bucketName = "your-bucket-name", string objectName = "your-object-name", string key = "file-type", string value = "profile-image")
 	{
 		var storage = StorageClient.Create();
 		var file = storage.GetObject(bucketName, objectName);

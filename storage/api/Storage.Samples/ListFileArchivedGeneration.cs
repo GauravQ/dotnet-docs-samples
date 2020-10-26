@@ -14,22 +14,20 @@
 
 // [START storage_list_file_archived_generations]
 
-using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 using System.Collections.Generic;
 
-public class ListFileArchivedGeneration
+public class ListFileArchivedGenerationSample
 {
-	public IEnumerable<Google.Apis.Storage.v1.Data.Object> ListAllFiles(string bucketName = "your-bucket-name")
+	public IEnumerable<Google.Apis.Storage.v1.Data.Object> ListFileArchivedGeneration(string bucketName = "your-bucket-name")
 	{
 		var storage = StorageClient.Create();
 
-		var listOptions = new ListObjectsOptions
+		var storageObjects = storage.ListObjects(bucketName, options: new ListObjectsOptions
 		{
 			Versions = true
-		};
-		var storageObjects = storage.ListObjects(bucketName, options: listOptions);
+		});
 
 		foreach (var storageObject in storageObjects)
 		{

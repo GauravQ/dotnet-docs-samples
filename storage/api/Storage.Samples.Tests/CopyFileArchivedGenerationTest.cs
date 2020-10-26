@@ -29,39 +29,41 @@ public class CopyFileArchivedGenerationTest
     public void CopyFileArchivedGeneration()
     {
         UploadFileSample uploadFileSample = new UploadFileSample();
-        ListFilesSample listFilesSample = new ListFilesSample();
-        BucketEnableVersioning bucketEnableVersioning = new BucketEnableVersioning();
+        BucketEnableVersioningSample bucketEnableVersioningSample = new BucketEnableVersioningSample();
         GetMetadataSample getMetadataSample = new GetMetadataSample();
         DownloadFileSample downloadFileSample = new DownloadFileSample();
-        CopyFileArchivedGeneration copyFileArchived = new CopyFileArchivedGeneration();
-        DeleteFileArchivedGeneration deleteFileArchived = new DeleteFileArchivedGeneration();
-        BucketDisableVersioning bucketDisableVersioning = new BucketDisableVersioning();
+        CopyFileArchivedGenerationSample copyFileArchivedGenerationSample = new CopyFileArchivedGenerationSample();
+        DeleteFileArchivedGenerationSample deleteFileArchivedGenerationSample = new DeleteFileArchivedGenerationSample();
+        BucketDisableVersioningSample bucketDisableVersioningSample = new BucketDisableVersioningSample();
 
         var objectName = "HelloCopyArchive.txt";
         var copiedObjectName = "ByeCopy.txt";
 
-        //Enable bucket versioning
-        bucketEnableVersioning.Enable(_bucketFixture.BucketNameGeneric);
+        // Enable bucket versioning
+        bucketEnableVersioningSample.BucketEnableVersioning(_bucketFixture.BucketNameGeneric);
 
-
-        //Uploaded for the first time
+        // Uploaded for the first time
         uploadFileSample.UploadFile(_bucketFixture.BucketNameGeneric, _bucketFixture.FilePath, objectName);
 
-        //Get generation of first version of the file
+        // Get generation of first version of the file
         var obj = getMetadataSample.GetMetadata(_bucketFixture.BucketNameGeneric, objectName);
         var fileArchivedGeneration = obj.Generation;
 
-        //Upload again to archive previous generation.
+        // Upload again to archive previous generation.
         uploadFileSample.UploadFile(_bucketFixture.BucketNameGeneric, "Resources/HelloDownloadCompleteByteRange.txt", objectName);
 
-        //Get generation of second version of the file
+        // Get generation of second version of the file
         obj = getMetadataSample.GetMetadata(_bucketFixture.BucketNameGeneric, objectName);
         var fileCurrentGeneration = obj.Generation;
+
+
+        _bucketFixture.CollectArchivedFiles(_bucketFixture.BucketNameGeneric, objectName, fileArchivedGeneration);
+        _bucketFixture.CollectArchivedFiles(_bucketFixture.BucketNameGeneric, objectName, fileCurrentGeneration);
 
         try
         {
             //Copy first version of the file to new bucket.
-            copyFileArchived.Copy(_bucketFixture.BucketNameGeneric, objectName,
+            copyFileArchivedGenerationSample.CopyFileArchivedGeneration(_bucketFixture.BucketNameGeneric, objectName,
                 _bucketFixture.BucketNameRegional, _bucketFixture.CollectRegionalObject(copiedObjectName), fileArchivedGeneration);
 
             //Download copied file
@@ -75,14 +77,7 @@ public class CopyFileArchivedGenerationTest
             File.Delete(copiedObjectName);
 
             //Disable bucket versioning
-            bucketDisableVersioning.Disable(_bucketFixture.BucketNameGeneric);
-
-            //For garbage collection of files with versioning enabled.
-
-            //Delete first generation of the file
-            deleteFileArchived.Delete(_bucketFixture.BucketNameGeneric, objectName, fileArchivedGeneration);
-            //Delete second generation of the file
-            deleteFileArchived.Delete(_bucketFixture.BucketNameGeneric, objectName, fileCurrentGeneration);
+            bucketDisableVersioningSample.BucketDisableVersioning(_bucketFixture.BucketNameGeneric);
         }
     }
 }

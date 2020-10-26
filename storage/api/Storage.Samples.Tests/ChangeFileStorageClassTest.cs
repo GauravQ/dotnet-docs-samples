@@ -28,14 +28,13 @@ public class ChangeFileStorageClassTest
     [Fact]
     public void ChangeFileStorageClass()
     {
-        ChangeFileStorageClass changeClass = new ChangeFileStorageClass();
+        ChangeFileStorageClassSample changeFileStorageClassSample = new ChangeFileStorageClassSample();
 
-        //Change storage class to Coldline
-        var file = changeClass.ChangeStorageClass(_bucketFixture.BucketNameGeneric, _bucketFixture.FileName, StorageClasses.Archive);
+        // Change storage class to Coldline
+        var file = changeFileStorageClassSample.ChangeFileStorageClass(_bucketFixture.BucketNameGeneric, _bucketFixture.FileName, StorageClasses.Archive);
         Assert.Equal(StorageClasses.Coldline, file.StorageClass);
 
-        //Change it back to standard
-        file = changeClass.ChangeStorageClass(_bucketFixture.BucketNameGeneric, _bucketFixture.FileName, StorageClasses.Standard);
-        Assert.Equal(StorageClasses.Coldline, file.StorageClass);
+        // Change it back to standard
+        changeFileStorageClassSample.ChangeFileStorageClass(_bucketFixture.BucketNameGeneric, _bucketFixture.FileName, StorageClasses.Standard);
     }
 }

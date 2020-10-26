@@ -18,9 +18,9 @@ using Google.Apis.Storage.v1.Data;
 using Google.Cloud.Storage.V1;
 using System;
 
-public class BucketDisableVersioning
+public class BucketDisableVersioningSample
 {
-	public Bucket Disable(string bucketName = "your-bucket-name")
+	public Bucket BucketDisableVersioning(string bucketName = "your-bucket-name")
 	{
 		var storage = StorageClient.Create();
 		var bucket = storage.GetBucket(bucketName);

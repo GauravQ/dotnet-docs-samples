@@ -27,15 +27,15 @@ public class BucketDisableVersioningTest
     [Fact]
     public void BucketDisableVersioning()
     {
-        BucketEnableVersioning enableVersion = new BucketEnableVersioning();
-        BucketDisableVersioning disableVersion = new BucketDisableVersioning();
+        BucketEnableVersioningSample bucketEnableVersioningSample = new BucketEnableVersioningSample();
+        BucketDisableVersioningSample bucketDisableVersioningSample = new BucketDisableVersioningSample();
 
-        //Versioning is disabled by default, so Enable versioning
-        var bucket = enableVersion.Enable(_bucketFixture.BucketNameGeneric);
+        // Versioning is disabled by default, so Enable versioning
+        var bucket = bucketEnableVersioningSample.BucketEnableVersioning(_bucketFixture.BucketNameGeneric);
         Assert.True(bucket.Versioning.Enabled);
 
-        //Then disable versioning
-        bucket = disableVersion.Disable(_bucketFixture.BucketNameGeneric);
+        // Then disable versioning
+        bucket = bucketDisableVersioningSample.BucketDisableVersioning(_bucketFixture.BucketNameGeneric);
         Assert.False(bucket.Versioning.Enabled);
     }
 }

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
-using System.Net;
 using Xunit;
 
 [Collection(nameof(BucketFixture))]
@@ -31,22 +29,18 @@ public class BucketDeleteDefaultKmsKeyTest
     {
         EnableDefaultKMSKeySample enableDefaultKMSKeySample = new EnableDefaultKMSKeySample();
         GetBucketMetadataSample getBucketMetadataSample = new GetBucketMetadataSample();
-        BucketDeleteDefaultKmsKey deleteDefaultKmsKey = new BucketDeleteDefaultKmsKey();
+        BucketDeleteDefaultKmsKeySample bucketDeleteDefaultKmsKeySample = new BucketDeleteDefaultKmsKeySample();
 
-        //Set default key
-        var bucket = enableDefaultKMSKeySample.EnableDefaultKMSKey(_bucketFixture.ProjectId, _bucketFixture.BucketNameRegional,
+        // Set default key
+        enableDefaultKMSKeySample.EnableDefaultKMSKey(_bucketFixture.ProjectId, _bucketFixture.BucketNameRegional,
               _bucketFixture.KmsKeyLocation, _bucketFixture.KmsKeyRing, _bucketFixture.KmsKeyName);
         _bucketFixture.SleepAfterBucketCreateUpdateDelete();
 
-        //Verify default key
+        // Remove default key
+        bucketDeleteDefaultKmsKeySample.BucketDeleteDefaultKmsKey(_bucketFixture.BucketNameRegional);
+
+        // Verify removal
         var bucketMetadata = getBucketMetadataSample.GetBucketMetadata(_bucketFixture.BucketNameRegional);
-        Assert.Equal(_bucketFixture.KmsKeyName, bucketMetadata.Encryption.DefaultKmsKeyName);
-
-        //Remove default key
-        deleteDefaultKmsKey.RemoveKMSKey(_bucketFixture.BucketNameRegional);
-
-        //Verify removal
-        bucketMetadata = getBucketMetadataSample.GetBucketMetadata(_bucketFixture.BucketNameRegional);
         Assert.NotEqual(_bucketFixture.KmsKeyName, bucketMetadata.Encryption.DefaultKmsKeyName);
     }
 }
